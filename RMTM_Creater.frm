@@ -190,17 +190,29 @@ Private Sub CommandButton_SubmitTimeEntry_Click()
     End If
 
 End Sub
-
 Private Sub CommandButton2_Click()
     Dim ans As String
     Dim ticketid  As Integer
-    ans = InputBox("チケットＩＤを入力", "チケット取得", "")
+    ans = InputBox("チケットＩＤ/検索文字列を入力", "チケット取得", "")
     If ans = "" Then
         Exit Sub
     End If
-    ticketid = val(ans)
-    Call get_ticket_subject(ticketid, Setting_Redmine_URL, Setting_Redmine_APIKEY)
-    Call favorite_initialize("" & ticketid)
+    
+    If IsNumeric(ans) Then
+        ticketid = StrConv(ans, vbNarrow)
+        Call get_ticket_subject(ticketid, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+        Call favorite_initialize("" & ticketid)
+    Else
+        Dim myProject, myStory As String
+        If LocalSavedSettings.exists("Dic_Projects_ID") And LocalSavedSettings("Dic_Projects_ID").exists(ComboBox_Project.value) Then
+            myProject = LocalSavedSettings("Dic_Projects_ID")(ComboBox_Project.value)
+        End If
+    
+        Call RMTS_Search.set_param(myProject, ComboBox_Project.value)
+        RMTS_Search.TextBox_SearchKey = ans
+        RMTS_Search.CommandButton_SearchTicket_Click
+        RMTS_Search.Show
+    End If
 End Sub
 
 Private Sub CommandButton3_Click()

@@ -29,6 +29,9 @@ Public Mail_Subject As String
 Public Mail_Body As String
 Public Cal_Title As String
 
+Public Search_Ticket_ID As String
+Public Search_Ticket_Subject As String
+
 Public abc As Object
 
 Public Initialized As Integer
@@ -36,7 +39,7 @@ Public webincreasemyAPIKey As Integer
 Public debug_ As Boolean
 
 Public Function first_initializer()
-debug_ = True
+debug_ = False
 If debug_ Then Debug.Print "First Initializer Called"
 
 Setting_Redmine_URL = ""
@@ -193,7 +196,7 @@ Function PostchkCal(obj As AppointmentItem)
     RMTC_Creater.TextBox_Subject = Mail_Subject
 
     RMTM_Creater.TextBox_timeentryhours.value = ConvertString(obj.Duration) / 60
-    RMTM_Creater.TextBox_Comment.Text = ConvertString(obj.ConversationTopic)
+    RMTM_Creater.TextBox_Comment.Text = ConvertString(obj.ConversationTopic) & Mail_Subject
     Cal_Title = ConvertString(obj.ConversationTopic)
 End Function
 Public Function ConvertString(ByVal val As String)
@@ -206,7 +209,7 @@ Public Function ConvertString(ByVal val As String)
     tmpstr = Replace(tmpstr, "&", "&amp;")
     ConvertString = tmpstr
 End Function
-Sub Redmine_DeleteRed()
+Sub ÉåÉWÉXÉgÉäçÌèú()
  DeleteSetting ("OutlookRMTC")
 End Sub
 
