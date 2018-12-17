@@ -1,0 +1,52 @@
+ReadMe
+
+create ticket for outlook mails and schedules
+
+1.Install
+1.1.Install Module
+import folows files, to Outlook Macro Project
+RMTC_Creater.frm
+RMTC_Creater.frx
+RMTC_Module.bas
+RMTC_Setting.frm
+RMTC_Setting.frx
+RMTM_Creater.frm
+RMTM_Creater.frx
+
+1.2.Install Necessary module
+these files are other person's works. please check licenses
+
+1.2.1.Calender Form 
+CalenderForm.frm
+CalenderForm.frx
+you will get from https://github.com/satoshi71/vbacalendar
+
+1.2.2.JSONLib
+JSONLib.cls
+you will get from https://github.com/markwilliams970/RallyRestToolkitForVBA/blob/master/VBAProjectFiles/JSONLib.cls
+ 
+1.3. Enable Runtime
+Development - Tools - References - "Windows Scripting Runtime" to Enable
+
+2.Hou to Use
+Macro-"Redmine_CreateTicket"：
+ For create Ticket
+Macro-"Redmine_CreateTimeEntry"：
+ For Create Time Entry
+Macro-"Redmine_DeleteRed"：
+ Delete Registory Data
+
+3.Copy Right
+grobkreuz <grobkreuz@gmail.com>
+
+4.License
+4.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx
+GNU GPL Ver.3 License
+
+4.2. Calender Form , JSONLib.cls 
+See web site
+
+5.Support
+Nothing
+
+zipped file avairable https://github.com/grbokreuz/Redmine_tools_for_outlook/releases/download/1.1/Redmine_tools_for_outlook-master_v1.1.zip
