@@ -209,7 +209,7 @@ Public Function ConvertString(ByVal val As String)
     tmpstr = Replace(tmpstr, "&", "&amp;")
     ConvertString = tmpstr
 End Function
-Sub ƒŒƒWƒXƒgƒŠíœ()
+Sub Delete_Reg()
  DeleteSetting ("OutlookRMTC")
 End Sub
 
