@@ -30,6 +30,10 @@ you will get from https://github.com/markwilliams970/RallyRestToolkitForVBA/blob
 Development - Tools - References - "Windows Scripting Runtime" to Enable
 
 2.Hou to Use
+For Redmine
+  Enable JSON, RestAPI on your redmine setting
+  
+For Outlook
 Macro-"Redmine_CreateTicket"：
  For create Ticket
 Macro-"Redmine_CreateTimeEntry"：
@@ -50,4 +54,3 @@ See web site
 5.Support
 Nothing
 
-zipped file avairable https://github.com/grbokreuz/Redmine_tools_for_outlook/releases/download/1.1/Redmine_tools_for_outlook-master_v1.1.zip
