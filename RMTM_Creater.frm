@@ -13,12 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-' Redmine TimeEntry Maker
-' ステータス、トラッカーは複数指定しても動かない。。。。
-
 Private selected_ticket_id As String
 
 Public Sub set_select_ticket_id(ByRef ticketid As String, ByRef subject As String)
@@ -64,14 +58,12 @@ Private Sub ComboBox_parentActivity_Change()
 
         Call set_backlog_ticket_for_selected_activity(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
     End If
- '   TextBox_Comment.Text = ""
 End Sub
 
 Private Sub ComboBox_parentBacklog_Change()
    selected_ticket_id = Dic_Backlog(ComboBox_parentBacklog.value)
    Label_selected_ticket.Caption = ComboBox_parentBacklog.value
    Call favorite_initialize(selected_ticket_id)
-  ' TextBox_Comment.Text = ""
 End Sub
 
 Private Sub CommandButton_setfavorite_DBClick()
@@ -119,7 +111,7 @@ Private Sub CommandButton_SubmitTimeEntry_Click()
     Dim tmpstoryid, tmpactivityid, tmpbacklogid As String
     
     If selected_ticket_id = "" Then
-        MsgBox "対象のチケットが確認できません"
+        MsgBox "find ticket is failed"
         Exit Sub
     End If
 
@@ -169,7 +161,7 @@ Private Sub CommandButton_SubmitTimeEntry_Click()
 
     If xhr.Status = 201 Then
         Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
-        msgreturn = MsgBox("#" & selected_ticket_id & "に時間記録しました. Webを開きますか?", vbYesNo)
+        msgreturn = MsgBox("#" & selected_ticket_id & " create time entry . Open Web?", vbYesNo)
 
             If debug_ Then Debug.Print "user choice is : " & msgreturn
 
@@ -286,7 +278,7 @@ End Sub
 Private Sub UserForm_Initialize()
     If Initialized = 1 Then
     Else
-        MsgBox "起動方法が誤っています"
+        MsgBox "failed to load"
         Me.Width = 0
         Me.Height = 0
         Exit Sub
@@ -338,35 +330,30 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
     Set LocalSavedSettings = JSONLib.parse(RegStr)
     Debug.Assert Err.Number = 0
 
-    ' レジストリ設定の API キーがあれば変数にとりこむ
     If LocalSavedSettings.exists("Setting_Redmine_APIKEY") Then
         Setting_Redmine_APIKEY = LocalSavedSettings("Setting_Redmine_APIKEY")
     Else
         If debug_ Then Debug.Print "can not find LocalSavedSettings(""Setting_Redmine_APIKEY"")"
     End If
     
-    ' レジストリ設定の URL があれば変数に取り込む
     If LocalSavedSettings.exists("Setting_Redmine_URL") Then
         Setting_Redmine_URL = LocalSavedSettings("Setting_Redmine_URL")
     Else
         If debug_ Then Debug.Print "can not find LocalSavedSettings(""Setting_Redmine_URL"")"
     End If
     
-    ' レジストリ設定の APIKeyを含めるか
     If LocalSavedSettings.exists("webincreasemyAPIKey") Then
         webincreasemyAPIKey = LocalSavedSettings("webincreasemyAPIKey")
     Else
         If debug_ Then Debug.Print "can not find LocalSavedSettings(""webincreasemyAPIKey"")"
     End If
 
-    ' リストの値を一旦消す
     RMTM_Creater.ComboBox_Project.Clear
     RMTM_Creater.ComboBox_ParentStory.Clear
     RMTM_Creater.ComboBox_parentActivity.Clear
     RMTM_Creater.ComboBox_parentBacklog.Clear
     RMTM_Creater.ComboBox_TimeEntryActivity.Clear
 
-    ' project をリストに入れる
     If LocalSavedSettings.exists("Dic_Projects") Then
         Set tmpdic = LocalSavedSettings("Dic_Projects")
         For Each Var In tmpdic
@@ -374,7 +361,6 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
         Next Var
     End If
 
-    ' 活動 をリストに入れる
     If LocalSavedSettings.exists("ListBox_setting_TimeEntryActivity") Then
         Set tmpdic = LocalSavedSettings("ListBox_setting_TimeEntryActivity")
         For Each Var In tmpdic
@@ -383,7 +369,6 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
         Set Dic_TimeEntryActivity = tmpdic
     End If
 
-    ' トランザクションデータを読み込む
     RegStr = GetSetting("OutlookRMTC", "Transaction", "TimeEntryTrans")
     If debug_ Then Debug.Print "UserForm_Initialize :: get regset : TransactionTimeEntryData = " & RegStr
     Set TransactionTimeEntryData = JSONLib.parse(RegStr)
@@ -404,7 +389,6 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
     End If
 
     Call draw_favorite_box
-   
 
     Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
     
@@ -465,8 +449,6 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     Dim json, tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
-
-   
     If debug_ Then Debug.Print "Calle :: set_story_ticket_for_selected_project"
     Set Dic_Story = New Dictionary
     
@@ -474,14 +456,11 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     If LocalSavedSettings.exists("Dic_Projects_ID") And LocalSavedSettings("Dic_Projects_ID").exists(ComboBox_Project.value) Then
         myProject = LocalSavedSettings("Dic_Projects_ID")(ComboBox_Project.value)
     End If
-    
     If myProject = "" Then
         If debug_ Then Debug.Print "Not found; project "
         Exit Sub
         
     End If
-
-    ' create filter
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
     filter_status = ""
@@ -521,39 +500,27 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
             filterstr = filterstr & "&" & filter_tracker
         End If
     End If
-
-
-
-
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-
     Dim subjson As Integer
     Dim jsonstring As String
-    
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
-    
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
     End If
- 
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
     subjson = 0
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-        
     Do While total > nextoffset
         subjson = 1
-
         Dim subjsonstr As String
-
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
-
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -569,7 +536,6 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
             Next Var
         End If
     Loop
-
     For Each Var In json("issues")
             If Var.exists("parent") = False Then
                 If Var("project")("id") = myProject Then
@@ -591,8 +557,6 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
     Dim json, tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
-
-   
     If debug_ Then Debug.Print "★start★Calle :: set_activity_ticket_for_selected_story"
     Set Dic_Activity = New Dictionary
     
@@ -609,8 +573,6 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
         Exit Sub
         
     End If
-
-    ' create filter
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
     filter_status = ""
@@ -650,10 +612,6 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
             filterstr = filterstr & "&" & filter_tracker
         End If
     End If
-
-
-
-
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
@@ -698,9 +656,6 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
             Next Var
         End If
     Loop
-
-
-
     For Each Var In json("issues")
             If debug_ Then Debug.Print Var("id") & " : localfilter is enable"
             If Var.exists("parent") = True Then
@@ -754,8 +709,6 @@ If debug_ Then Debug.Print "★start★ set_backlog_ticket_for_selected_activity"
         Exit Sub
         
     End If
-
-    ' create filter
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
     filter_status = ""
@@ -796,35 +749,25 @@ If debug_ Then Debug.Print "★start★ set_backlog_ticket_for_selected_activity"
             filterstr = filterstr & "&" & filter_tracker
         End If
     End If
-
-
-
-
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-
     Dim subjson As Integer
     Dim jsonstring As String
-    
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
-    
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
     End If
- 
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
     subjson = 0
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-        
     Do While total > nextoffset
         subjson = 1
-
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
 
@@ -843,11 +786,7 @@ If debug_ Then Debug.Print "★start★ set_backlog_ticket_for_selected_activity"
             Next Var
         End If
     Loop
-
-
-
     For Each Var In json("issues")
-
             If debug_ Then Debug.Print Var("id") & " : localfilter is enable"
             If Var.exists("parent") = True Then
                 If debug_ Then Debug.Print "this ticket have parents"
