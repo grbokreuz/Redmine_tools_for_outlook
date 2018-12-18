@@ -193,7 +193,7 @@ End Sub
 Private Sub CommandButton2_Click()
     Dim ans As String
     Dim ticketid  As Integer
-    ans = InputBox("チケットＩＤ/検索文字列を入力", "チケット取得", "")
+    ans = InputBox("ticket id or kwy word", "get ticket", "")
     If ans = "" Then
         Exit Sub
     End If
@@ -274,12 +274,13 @@ Private Sub ListBox_mytimeentry_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 End Sub
 
 Private Sub ScrollBar_timeentry_Change()
-
     TextBox_timeentryhours.Text = 0 - ScrollBar_timeentry.value * 0.25
 End Sub
 
 Private Sub TextBox_timeentryhours_Change()
-    TextBox_timeentryhours.Text = val(TextBox_timeentryhours.Text)
+
+    ScrollBar_timeentry.value = 0 - CSng(TextBox_timeentryhours.value) / 0.25
+
 End Sub
 
 Private Sub UserForm_Initialize()
@@ -872,18 +873,14 @@ Public Sub get_ticket_subject(ByRef ticketnumber As Integer, ByVal url As String
     Dim json, tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
-
-   
     If debug_ Then Debug.Print "★start★Calle :: get_ticket_subject"
-
     Dim jsonstring As String
-    
     jsonstring = GetData(url & "/issues/" & ticketnumber & ".json?key=" & apikey)
-    
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
-        MsgBox "対象チケットがありません."
+        MsgBox "not found ticket."
+        Call CommandButton2_Click
         Exit Sub
     End If
     Set Var = json("issue")
@@ -900,33 +897,24 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     Dim json, tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
-
     If debug_ Then Debug.Print "★start★Calle :: check_my_timeentry_on_today"
-
     Dim subjson As Integer
     Dim jsonstring As String
-
     ListBox_mytimeentry.Clear
-
     jsonstring = GetData(url & "time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "&key=" & apikey)
-    
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
-         'MsgBox "時間を取得できませんでした."
         Exit Sub
     End If
- 
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
     subjson = 0
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-        
     Do While total > nextoffset
         subjson = 1
-
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
         Dim jsonsub As Object
@@ -937,15 +925,12 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-
         If subjson = 1 Then
             For Each Var In jsonsub("issues")
                 json("issues").Add Var
             Next Var
         End If
     Loop
-
-
     Dim totaltimeentry As Single
     Dim myname As String
     totaltimeentry = 0
@@ -964,7 +949,6 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     Next Var
     Set json = Nothing
     Set JSONLib = Nothing
-
     Label_spentontoday_hours.Caption = "[" & totaltimeentry & "] hours spent on today"
 If debug_ Then Debug.Print "★end★ check_my_timeentry_on_today"
 
@@ -973,7 +957,6 @@ Private Function favorite_initialize(ByRef ticketid As String)
     If ticketid = "" Then
         Exit Function
     End If
-
     CommandButton_setfavorite.Caption = "☆"
     If TransactionTimeEntryData.exists("favoritelist") Then
       If TransactionTimeEntryData("favoritelist").exists(ticketid) Then

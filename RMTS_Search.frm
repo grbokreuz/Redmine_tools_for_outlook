@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTS_Search 
    Caption         =   "RMTS_Search"
-   ClientHeight    =   3600
+   ClientHeight    =   3720
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   4560
+   ClientWidth     =   6150
    OleObjectBlob   =   "RMTS_Search.frx":0000
    StartUpPosition =   1  'オーナー フォームの中央
 End
@@ -13,13 +13,10 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Search_Ticket_Subject
-'Search_Ticket_ID
-
 Public project As String
 Public Function set_param(ByVal inp_id As String, ByVal inp_name As String)
     project = inp_id
-    Label_Projectname.Caption = inp_name
+    ComboBox_Project.value = inp_name
 End Function
 Public Sub get_ticket_for_keyword(ByRef project As String, ByRef keyword As String, ByVal url As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
@@ -28,19 +25,13 @@ Public Sub get_ticket_for_keyword(ByRef project As String, ByRef keyword As Stri
     Dim total, offset, limit, nextoffset As Integer
     If debug_ Then Debug.Print "Calle :: set_story_ticket_for_selected_project"
     Set Dic_Story = New Dictionary
-
     ListBox_TicketList.Clear
-
     Dim myProject As String
     myProject = project
-    
     If myProject = "" Then
         If debug_ Then Debug.Print "Not found; project "
         Exit Sub
-        
     End If
-
-    ' create filter
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
     filter_status = ""
@@ -48,7 +39,6 @@ Public Sub get_ticket_for_keyword(ByRef project As String, ByRef keyword As Stri
     Set Var = New Dictionary
     Set tmpdic = New Dictionary
     If debug_ Then Debug.Print JSONLib.toString(LocalSavedSettings("ListBox_Setting_Status_child"))
-    
     If LocalSavedSettings.exists("ListBox_Setting_Status_child") Then
         Set tmpdic = LocalSavedSettings("ListBox_Setting_Status_child")
         For Each Var In tmpdic
@@ -58,7 +48,6 @@ Public Sub get_ticket_for_keyword(ByRef project As String, ByRef keyword As Stri
                 filter_status = filter_status & "|" & tmpdic(Var)
             End If
         Next Var
-        
         If filterstr = "" Then
             filterstr = filter_status
         Else
@@ -80,35 +69,25 @@ Public Sub get_ticket_for_keyword(ByRef project As String, ByRef keyword As Stri
             filterstr = filterstr & "&" & filter_tracker
         End If
     End If
-
-
-
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-
     Dim subjson As Integer
     Dim jsonstring As String
-    
-    
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
-
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
     End If
- 
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
     subjson = 0
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-        
     Do While total > nextoffset
         subjson = 1
-
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
@@ -120,13 +99,11 @@ Public Sub get_ticket_for_keyword(ByRef project As String, ByRef keyword As Stri
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Loop
-
     If subjson = 1 Then
         For Each Var In jsonsub("issues")
             json("issues").Add Var
         Next Var
     End If
-
     listline = 0
     For Each Var In json("issues")
         Dim tmpsubject As String
@@ -144,46 +121,82 @@ Public Sub get_ticket_for_keyword(ByRef project As String, ByRef keyword As Stri
     Next Var
     Set json = Nothing
     Set JSONLib = Nothing
-
 End Sub
 Private Function reg_hit(ByRef str As String, ByRef ptrn As String)
-    
     Dim regex
     Set regex = CreateObject("VBScript.RegExp")
     regex.Pattern = ptrn
-    
     Dim result
     Set result = regex.Execute(str)
-   
     reg_hit = result.Count
 End Function
 
 Public Sub CommandButton_SearchTicket_Click()
-    Call get_ticket_for_keyword(project, Label_Projectname.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+        If LocalSavedSettings.exists("Dic_Projects_ID") Then
+            If LocalSavedSettings("Dic_Projects_ID").exists(ComboBox_Project.value) Then
+                project = LocalSavedSettings("Dic_Projects_ID")(ComboBox_Project.value)
+            End If
+        End If
+    Call get_ticket_for_keyword(project, TextBox_SearchKey.Text, Setting_Redmine_URL, Setting_Redmine_APIKEY)
 End Sub
 
 Private Sub ListBox_TicketList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     If ListBox_TicketList.value = "" Then
         Exit Sub
     End If
-
     Dim myindex As Integer
     myindex = ListBox_TicketList.ListIndex
     If debug_ Then Debug.Print "listbox index " & myindex
-
-
     Call RMTM_Creater.set_select_ticket_id(ListBox_TicketList.List(myindex, 0), ListBox_TicketList.List(myindex, 2))
     Unload Me
-
 End Sub
 
 Private Sub UserForm_Initialize()
-   ListBox_TicketList.ColumnWidths = "30;65;80"
+    If Initialized = 1 Then
+        Call rmts_initialize
+        ListBox_TicketList.ColumnWidths = "30;65;80"
+    Else
+        MsgBox "Failed to Load"
+        Me.Width = 0
+        Me.Height = 0
+        Exit Sub
+    End If
 End Sub
-
-
 Private Sub TextBox_SearchKey_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
     If KeyCode <> 13 Then Exit Sub
     Call CommandButton_SearchTicket_Click
 End Sub
-
+Private Sub rmts_initialize()
+    Dim Var As Variant
+    Dim RegStr As String
+    Dim JSONLib As New JSONLib
+    Dim tmpdic As Object
+    RegStr = GetSetting("OutlookRMTC", "Settings", "AllSettings")
+    If RegStr = "" Then
+        Exit Sub
+    End If
+    If debug_ Then Debug.Print "UserForm_Initialize :: get regset : AllSetting" & RegStr
+    Set LocalSavedSettings = JSONLib.parse(RegStr)
+    Debug.Assert Err.Number = 0
+    If LocalSavedSettings.exists("Setting_Redmine_APIKEY") Then
+        Setting_Redmine_APIKEY = LocalSavedSettings("Setting_Redmine_APIKEY")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""Setting_Redmine_APIKEY"")"
+    End If
+    If LocalSavedSettings.exists("Setting_Redmine_URL") Then
+        Setting_Redmine_URL = LocalSavedSettings("Setting_Redmine_URL")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""Setting_Redmine_URL"")"
+    End If
+    If LocalSavedSettings.exists("webincreasemyAPIKey") Then
+        webincreasemyAPIKey = LocalSavedSettings("webincreasemyAPIKey")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""webincreasemyAPIKey"")"
+    End If
+    If LocalSavedSettings.exists("Dic_Projects") Then
+        Set tmpdic = LocalSavedSettings("Dic_Projects")
+        For Each Var In tmpdic
+            RMTS_Search.ComboBox_Project.AddItem Var
+        Next Var
+    End If
+End Sub
