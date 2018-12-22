@@ -164,6 +164,7 @@ End Sub
 Private Sub CommandButton_toTimeentry_Click()
     Call RMTM_Creater.rmtm_initializer
     Call RMTM_Creater.set_select_ticket_id(RMTM_Con_parentid, TextBox_Subject.Text)
+    Unload Me
     RMTM_Creater.Show
     Call rmtc_initializer
 End Sub
@@ -210,6 +211,7 @@ Private Sub Button_Settings_Click()
     RMTC_Setting.Show
     If Initialized = 1 Then
         Call rmtc_initializer
+        Call RMTS_Search.rmts_initialize
     Else
         Unload Me
     End If
@@ -578,6 +580,16 @@ If debug_ Then Debug.Print "rmtc_initializer Called"
         webincreasemyAPIKey = LocalSavedSettings("webincreasemyAPIKey")
     Else
         If debug_ Then Debug.Print "can not find LocalSavedSettings(""webincreasemyAPIKey"")"
+    End If
+    If LocalSavedSettings.exists("keywordsearchonAllTrackers") Then
+        keywordsearchonAllTrackers = LocalSavedSettings("keywordsearchonAllTrackers")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""keywordsearchonAllTrackers"")"
+    End If
+    If LocalSavedSettings.exists("searchContents") Then
+        searchContents = LocalSavedSettings("searchContents")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""searchContents"")"
     End If
     RMTC_Creater.ComboBox_Project.Clear
     RMTC_Creater.ComboBox_Asignedto.Clear

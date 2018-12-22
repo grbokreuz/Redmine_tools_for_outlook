@@ -25,6 +25,7 @@ Private Sub Button_Settings_Click()
     RMTC_Setting.Show
     If Initialized = 1 Then
         Call rmtm_initializer
+        Call RMTS_Search.rmts_initialize
     Else
         Unload Me
     End If
@@ -204,6 +205,7 @@ Private Sub CommandButton2_Click()
         RMTS_Search.TextBox_SearchKey = ans
         RMTS_Search.CommandButton_SearchTicket_Click
         RMTS_Search.Show
+        Call favorite_initialize(selected_ticket_id)
     End If
 End Sub
 
@@ -212,12 +214,12 @@ Private Sub CommandButton3_Click()
 End Sub
 
 Private Sub CommandButton4_Click()
-selected_ticket_id = ""
-TextBox_Comment.Text = ""
-Label_selected_ticket.Caption = ""
-ComboBox_parentBacklog.Clear
-ComboBox_parentActivity.Clear
-ComboBox_ParentStory.value = ""
+    selected_ticket_id = ""
+    TextBox_Comment.Text = ""
+    Label_selected_ticket.Caption = ""
+    ComboBox_parentBacklog.Clear
+    ComboBox_parentActivity.Clear
+    ComboBox_ParentStory.value = ""
 End Sub
 
 Private Sub CommandButton5_Click()
@@ -242,11 +244,6 @@ Private Sub openweb(ByVal urlpath As String)
     WSH.Run urlpath, 3
     Set WSH = Nothing
 End Sub
-
-
-
-
-
 
 Private Sub Label_todaytimeentry_reload_Click()
     Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
@@ -346,6 +343,18 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
         webincreasemyAPIKey = LocalSavedSettings("webincreasemyAPIKey")
     Else
         If debug_ Then Debug.Print "can not find LocalSavedSettings(""webincreasemyAPIKey"")"
+    End If
+    
+    If LocalSavedSettings.exists("keywordsearchonAllTrackers") Then
+        keywordsearchonAllTrackers = LocalSavedSettings("keywordsearchonAllTrackers")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""keywordsearchonAllTrackers"")"
+    End If
+ 
+    If LocalSavedSettings.exists("searchContents") Then
+        searchContents = LocalSavedSettings("searchContents")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""searchContents"")"
     End If
 
     RMTM_Creater.ComboBox_Project.Clear

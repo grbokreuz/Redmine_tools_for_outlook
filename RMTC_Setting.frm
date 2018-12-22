@@ -134,6 +134,19 @@ Private Sub CommandButton_LoadSettingForm_Click()
     Else
          RMTC_Setting.CheckBox_webAccess_KeyIncrease.value = False
     End If
+
+    If keywordsearchonAllTrackers = 1 Then
+         RMTC_Setting.CheckBox_AllTracker.value = True
+    Else
+         RMTC_Setting.CheckBox_AllTracker.value = False
+    End If
+
+    If searchContents = 1 Then
+         RMTC_Setting.CheckBox_SearchContents.value = True
+    Else
+         RMTC_Setting.CheckBox_SearchContents.value = False
+    End If
+
     If ComboBox_Project_for_usermember.ListRows > 0 Then
         ComboBox_Project_for_usermember = ComboBox_Project_for_usermember.List(0)
     End If
@@ -485,6 +498,22 @@ Private Sub CommandButton_SaveSetting_Click()
         webincreasemyAPIKey = 0
         LocalSavedSettings("webincreasemyAPIKey") = 0
     End If
+    If RMTC_Setting.CheckBox_AllTracker.value = True Then
+        keywordsearchonAllTrackers = 1
+        LocalSavedSettings("keywordsearchonAllTrackers") = 1
+    Else
+        keywordsearchonAllTrackers = 0
+        LocalSavedSettings("keywordsearchonAllTrackers") = 0
+    End If
+    If RMTC_Setting.CheckBox_SearchContents.value = True Then
+        searchContents = 1
+        LocalSavedSettings("searchContents") = 1
+    Else
+        searchContents = 0
+        LocalSavedSettings("searchContents") = 0
+    End If
+
+
     RegStr = JSONLib.toString(LocalSavedSettings)
     If debug_ Then Debug.Print "save to reg :: "; RegStr
     SaveSetting "OutlookRMTC", "Settings", "AllSettings", RegStr

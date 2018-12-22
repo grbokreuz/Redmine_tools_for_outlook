@@ -29,6 +29,8 @@ Public Search_Ticket_Subject As String
 Public abc As Object
 Public Initialized As Integer
 Public webincreasemyAPIKey As Integer
+Public keywordsearchonAllTrackers As Integer
+Public searchContents As Integer
 Public debug_ As Boolean
 Public Function first_initializer()
     debug_ = False
@@ -141,10 +143,15 @@ Sub Redmint_CreateTimeEntry()
     End If
  Next x
  If myOlSel.Count = 0 Then
-    Call first_initializer
     Call RMTM_Creater.rmtm_initializer
     RMTM_Creater.Show
  End If
+End Sub
+Sub Redmint_Search()
+ Call first_initializer
+ Call RMTS_Search.rmts_initialize
+ RMTS_Search.Show
+
 End Sub
 Sub Dump(Text As String)
 Dim k As Long
