@@ -939,29 +939,12 @@ If debug_ Then Debug.Print "šstartš set_activity_ticket_for_assigned_id_to_me"
 
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
-    filter_status = ""
     filter_tracker = ""
     Set Var = New Dictionary
     Set tmpstatusdic = New Dictionary
     Set tmptracksdic = New Dictionary
     If debug_ Then Debug.Print JSONLib.toString(LocalSavedSettings("ListBox_Setting_Status_child"))
     
-    If LocalSavedSettings.exists("ListBox_Setting_Status_child") And (Not IsEmpty(LocalSavedSettings("ListBox_Setting_Status_child"))) Then
-        Set tmpstatusdic = LocalSavedSettings("ListBox_Setting_Status_child")
-        For Each Var In tmpstatusdic
-            If filter_status = "" Then
-                filter_status = "status_id=" & tmpstatusdic(Var)
-            Else
-                filter_status = filter_status & "|" & tmpstatusdic(Var)
-            End If
-        Next Var
-        
-        If filterstr = "" Then
-            filterstr = filter_status
-        Else
-            filterstr = filterstr & "&" & filter_status
-        End If
-    End If
     If LocalSavedSettings.exists("ListBox_Setting_Tracker_child") Then
         Set tmptracksdic = LocalSavedSettings("ListBox_Setting_Tracker_child")
         For Each Var In tmptracksdic
@@ -981,7 +964,7 @@ If debug_ Then Debug.Print "šstartš set_activity_ticket_for_assigned_id_to_me"
     Set Dic_Users = New Dictionary
     Dim subjson As Integer
     Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&" & filterstr)
+    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&" & filterstr)
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
@@ -997,7 +980,7 @@ If debug_ Then Debug.Print "šstartš set_activity_ticket_for_assigned_id_to_me"
     Do While total > nextoffset
         subjson = 1
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&offset=" & nextoffset & "&" & filterstr)
 
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
