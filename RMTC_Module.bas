@@ -15,6 +15,7 @@ Public Dic_Statuses As Object
 Public Dic_Priority As Object
 Public Dic_Asiigned As Object
 Public Dic_EstimatedHours As Object
+Public Dic_Assigned_To_Me As Object
 Public Dic_Users As Object
 Public Dic_TimeEntryActivity As Object
 Public tmpdelluser As Object
@@ -32,6 +33,7 @@ Public webincreasemyAPIKey As Integer
 Public keywordsearchonAllTrackers As Integer
 Public searchContents As Integer
 Public debug_ As Boolean
+Public RMTS_Search_SingleMode As Boolean
 Public Function first_initializer()
     debug_ = False
     If debug_ Then Debug.Print "First Initializer Called"
@@ -51,6 +53,7 @@ Public Function first_initializer()
     Set Dic_EstimatedHours = New Dictionary
     Set Dic_Users = New Dictionary
     Set Dic_TimeEntryActivity = New Dictionary
+    Set Dic_Assigned_To_Me = New Dictionary
     Set LocalSavedSettings = New Dictionary
     Set TransactionData = New Dictionary
     Set tmpdelluser = New Dictionary
@@ -59,6 +62,7 @@ Public Function first_initializer()
     Mail_Subject = ""
     Mail_Body = ""
     Initialized = 1
+    RMTS_Search_SingleMode = False
 End Function
 Public Function CreateHttpObject() As Object
     Dim objweb As Object
@@ -150,8 +154,8 @@ End Sub
 Sub Redmint_Search()
  Call first_initializer
  Call RMTS_Search.rmts_initialize
+ RMTS_Search_SingleMode = True
  RMTS_Search.Show
-
 End Sub
 Sub Dump(Text As String)
 Dim k As Long
@@ -191,5 +195,10 @@ Public Function testabs()
     Set abc = New Dictionary
 End Function
 
-
+Public Sub openweb(ByVal urlpath As String)
+    Dim WSH As Object
+    Set WSH = CreateObject("Wscript.Shell")
+    WSH.Run urlpath, 3
+    Set WSH = Nothing
+End Sub
 

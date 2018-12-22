@@ -154,12 +154,6 @@ Private Sub CommandButton_submit_Click()
         End If
         Exit Sub
 End Sub
-Private Sub openweb(ByVal urlpath As String)
-    Dim WSH As Object
-    Set WSH = CreateObject("Wscript.Shell")
-    WSH.Run urlpath, 3
-    Set WSH = Nothing
-End Sub
 
 Private Sub CommandButton_toTimeentry_Click()
     Call RMTM_Creater.rmtm_initializer
@@ -485,11 +479,13 @@ Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As 
         Next Var
     End If
     For Each Var In json("issues")
-        If Var("project")("id") = myProject And Var("parent")("id") = myStory Then
-            ComboBox_parentActivity.AddItem "#" & Var("id") & ":" & Var("subject")
-            Dic_Activity.Add "#" & Var("id") & ":" & Var("subject"), Var("id")
-        Else
-            If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id <>  " & myProject & " story_id <>  " & myStory
+        If Var.exists("parent") Then
+            If Var("project")("id") = myProject And Var("parent")("id") = myStory Then
+                ComboBox_parentActivity.AddItem "#" & Var("id") & ":" & Var("subject")
+                Dic_Activity.Add "#" & Var("id") & ":" & Var("subject"), Var("id")
+            Else
+                If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id <>  " & myProject & " story_id <>  " & myStory
+            End If
         End If
     Next Var
     Set json = Nothing

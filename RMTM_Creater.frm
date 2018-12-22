@@ -18,6 +18,7 @@ Private selected_ticket_id As String
 Public Sub set_select_ticket_id(ByRef ticketid As String, ByRef subject As String)
     selected_ticket_id = ticketid
     Label_selected_ticket.Caption = "#" & ticketid & ":" & subject
+    Label_selected_ticket.ControlTipText = Label_selected_ticket.Caption
 End Sub
 
 Private Sub Button_Settings_Click()
@@ -32,6 +33,14 @@ Private Sub Button_Settings_Click()
     
 End Sub
 
+Private Sub ComboBox_assigned_me_Change()
+    If Dic_Assigned_To_Me.exists(ComboBox_assigned_me.Text) Then
+         selected_ticket_id = Dic_Assigned_To_Me(ComboBox_assigned_me.Text)
+         Label_selected_ticket.Caption = ComboBox_assigned_me.Text
+         Label_selected_ticket.ControlTipText = Label_selected_ticket.Caption
+    End If
+End Sub
+
 Private Sub ComboBox_fevoritelist_Change()
     Dim Var As Variant
 
@@ -41,6 +50,7 @@ Private Sub ComboBox_fevoritelist_Change()
             If tmpdic(Var) = ComboBox_fevoritelist.value Then
                 selected_ticket_id = Var
                 Label_selected_ticket.Caption = ComboBox_fevoritelist.value
+                Label_selected_ticket.ControlTipText = Label_selected_ticket.Caption
             End If
         Next Var
     End If
@@ -55,6 +65,7 @@ Private Sub ComboBox_parentActivity_Change()
         If debug_ Then Debug.Print "ComboBox_parentActivity_Change :: select change : Activity id = " & Dic_Activity(ComboBox_parentActivity.value)
         selected_ticket_id = Dic_Activity(ComboBox_parentActivity.value)
         Label_selected_ticket.Caption = ComboBox_parentActivity.value
+        Label_selected_ticket.ControlTipText = Label_selected_ticket.Caption
         Call favorite_initialize(selected_ticket_id)
 
         Call set_backlog_ticket_for_selected_activity(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
@@ -64,6 +75,7 @@ End Sub
 Private Sub ComboBox_parentBacklog_Change()
    selected_ticket_id = Dic_Backlog(ComboBox_parentBacklog.value)
    Label_selected_ticket.Caption = ComboBox_parentBacklog.value
+   Label_selected_ticket.ControlTipText = Label_selected_ticket.Caption
    Call favorite_initialize(selected_ticket_id)
 End Sub
 
@@ -217,6 +229,7 @@ Private Sub CommandButton4_Click()
     selected_ticket_id = ""
     TextBox_Comment.Text = ""
     Label_selected_ticket.Caption = ""
+    Label_selected_ticket.ControlTipText = ""
     ComboBox_parentBacklog.Clear
     ComboBox_parentActivity.Clear
     ComboBox_ParentStory.value = ""
@@ -238,12 +251,7 @@ Private Sub Label_selected_ticket_Click()
         openweb (Setting_Redmine_URL & "/issues/" & selected_ticket_id)
     End If
 End Sub
-Private Sub openweb(ByVal urlpath As String)
-    Dim WSH As Object
-    Set WSH = CreateObject("Wscript.Shell")
-    WSH.Run urlpath, 3
-    Set WSH = Nothing
-End Sub
+
 
 Private Sub Label_todaytimeentry_reload_Click()
     Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
@@ -401,6 +409,8 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
 
     Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
     
+    Call set_activity_ticket_for_assigned_id_to_me(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+
     ListBox_mytimeentry.ColumnWidths = "30;65;25;50"
     
 End Sub
@@ -690,6 +700,7 @@ Private Sub ComboBox_ParentStory_Change()
         If debug_ Then Debug.Print "ComboBox_ParentStory_Change :: select change : Story id = " & Dic_Story(ComboBox_ParentStory.value)
         selected_ticket_id = Dic_Story(ComboBox_ParentStory.value)
         Label_selected_ticket.Caption = ComboBox_ParentStory.value
+        Label_selected_ticket.ControlTipText = ComboBox_ParentStory.value
         Call favorite_initialize(selected_ticket_id)
 
         Call set_activity_ticket_for_selected_story(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
@@ -834,6 +845,7 @@ Public Sub get_ticket_subject(ByRef ticketnumber As Integer, ByVal url As String
     Set Var = json("issue")
     selected_ticket_id = Var("id")
     Label_selected_ticket.Caption = "#" & Var("id") & ":" & Var("subject")
+    Label_selected_ticket.ControlTipText = "#" & Var("id") & ":" & Var("subject")
     TextBox_Comment.Text = Var("subject")
     Set json = Nothing
     Set JSONLib = Nothing
@@ -916,3 +928,97 @@ Private Function favorite_initialize(ByRef ticketid As String)
       End If
     End If
 End Function
+Public Sub set_activity_ticket_for_assigned_id_to_me(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
+If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
+    Dim JSONLib As New JSONLib
+    Dim json, tmpdic As Object
+    Dim Var As Variant
+    Dim total, offset, limit, nextoffset As Integer
+    If debug_ Then Debug.Print "Calle :: set_backlog_ticket_for_selected_activity"
+    Set Dic_Assigned_To_Me = New Dictionary
+
+    Dim filterstr, filter_status, filter_tracker  As String
+    filterstr = ""
+    filter_status = ""
+    filter_tracker = ""
+    Set Var = New Dictionary
+    Set tmpstatusdic = New Dictionary
+    Set tmptracksdic = New Dictionary
+    If debug_ Then Debug.Print JSONLib.toString(LocalSavedSettings("ListBox_Setting_Status_child"))
+    
+    If LocalSavedSettings.exists("ListBox_Setting_Status_child") And (Not IsEmpty(LocalSavedSettings("ListBox_Setting_Status_child"))) Then
+        Set tmpstatusdic = LocalSavedSettings("ListBox_Setting_Status_child")
+        For Each Var In tmpstatusdic
+            If filter_status = "" Then
+                filter_status = "status_id=" & tmpstatusdic(Var)
+            Else
+                filter_status = filter_status & "|" & tmpstatusdic(Var)
+            End If
+        Next Var
+        
+        If filterstr = "" Then
+            filterstr = filter_status
+        Else
+            filterstr = filterstr & "&" & filter_status
+        End If
+    End If
+    If LocalSavedSettings.exists("ListBox_Setting_Tracker_child") Then
+        Set tmptracksdic = LocalSavedSettings("ListBox_Setting_Tracker_child")
+        For Each Var In tmptracksdic
+            If filter_tracker = "" Then
+                filter_tracker = "tracker_id=" & tmptracksdic(Var)
+            Else
+                filter_tracker = filter_tracker & "|" & tmptracksdic(Var)
+            End If
+        Next Var
+        If filterstr = "" Then
+            filterstr = filter_tracker
+        Else
+            filterstr = filterstr & "&" & filter_tracker
+        End If
+    End If
+    Set Dic_Users = Nothing
+    Set Dic_Users = New Dictionary
+    Dim subjson As Integer
+    Dim jsonstring As String
+    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&" & filterstr)
+    Set json = New Dictionary
+    Set json = JSONLib.parse(jsonstring)
+    If json Is Nothing Then
+        MsgBox "Cant load rm."
+        Exit Sub
+    End If
+    total = json("total_count")
+    offset = json("offset")
+    limit = json("limit")
+    nextoffset = val(limit) + val(offset)
+    subjson = 0
+    If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
+    Do While total > nextoffset
+        subjson = 1
+        Dim subjsonstr As String
+        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&offset=" & nextoffset & "&" & filterstr)
+
+        Dim jsonsub As Object
+        Set jsonsub = New Dictionary
+        Set jsonsub = JSONLib.parse(subjsonstr)
+        total = jsonsub("total_count")
+        offset = jsonsub("offset")
+        limit = jsonsub("limit")
+        nextoffset = val(limit) + val(offset)
+        If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
+
+        If subjson = 1 Then
+            For Each Var In jsonsub("issues")
+                json("issues").Add Var
+            Next Var
+        End If
+    Loop
+    For Each Var In json("issues")
+       ComboBox_assigned_me.AddItem "#" & Var("id") & ":" & Var("subject")
+       Dic_Assigned_To_Me.Add "#" & Var("id") & ":" & Var("subject"), Var("id")
+    Next Var
+    Set json = Nothing
+    Set JSONLib = Nothing
+If debug_ Then Debug.Print "ÅöendÅö set_activity_ticket_for_assigned_id_to_me"
+End Sub

@@ -31,6 +31,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     myProject = project
     If myProject = "" Then
         If debug_ Then Debug.Print "Not found; project "
+
         Exit Sub
     End If
     Dim filterstr, filter_status, filter_tracker  As String
@@ -79,6 +80,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
         MsgBox "Cant load rm."
+
         Exit Sub
     End If
     total = json("total_count")
@@ -154,6 +156,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     myProject = project
     If myProject = "" Then
         If debug_ Then Debug.Print "Not found; project "
+
         Exit Sub
     End If
     Dim filterstr, filter_status, filter_tracker  As String
@@ -202,6 +205,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
         MsgBox "Cant load rm."
+
         Exit Sub
     End If
     total = json("total_count")
@@ -276,6 +280,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     myProject = project
     If myProject = "" Then
         If debug_ Then Debug.Print "Not found; project "
+
         Exit Sub
     End If
     Dim filterstr, filter_status, filter_tracker  As String
@@ -324,6 +329,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
         MsgBox "Cant load rm."
+
         Exit Sub
     End If
     total = json("total_count")
@@ -417,6 +423,8 @@ Public Sub CommandButton_SearchTicket_Click()
         Exit Sub
     End If
 
+    DoEvents
+
     If keywordsearchonAllTrackers = 1 Then
         Call get_ticket_for_keyword_categ(project, TextBox_SearchKey.Text, Setting_Redmine_URL, Setting_Redmine_APIKEY)
         Call get_ticket_for_keyword_subcat(project, TextBox_SearchKey.Text, Setting_Redmine_URL, Setting_Redmine_APIKEY)
@@ -424,6 +432,8 @@ Public Sub CommandButton_SearchTicket_Click()
     Else
         Call get_ticket_for_keyword_subsub(project, TextBox_SearchKey.Text, Setting_Redmine_URL, Setting_Redmine_APIKEY)
     End If
+
+    DoEvents
     CommandButton_SearchTicket.Enabled = True
 End Sub
 
@@ -434,8 +444,22 @@ Private Sub ListBox_TicketList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     Dim myindex As Integer
     myindex = ListBox_TicketList.ListIndex
     If debug_ Then Debug.Print "listbox index " & myindex
-    Call RMTM_Creater.set_select_ticket_id(ListBox_TicketList.List(myindex, 0), ListBox_TicketList.List(myindex, 2))
-    Unload Me
+    
+    If RMTS_Search_SingleMode = True Then
+        If debug_ Then Debug.Print "ListBox_TicketList_DblClick open web start : " & Setting_Redmine_URL & "/issue/" & ListBox_TicketList.List(myindex, 0) & "?key=" & Setting_Redmine_APIKEY
+        If ListBox_TicketList.List(myindex, 0) = "" Then
+            Exit Sub
+        End If
+        If webincreasemyAPIKey = 1 Then
+            openweb (Setting_Redmine_URL & "/issues/" & ListBox_TicketList.List(myindex, 0) & "?key=" & Setting_Redmine_APIKEY)
+        Else
+            openweb (Setting_Redmine_URL & "/issues/" & ListBox_TicketList.List(myindex, 0))
+        End If
+    
+    Else
+        Call RMTM_Creater.set_select_ticket_id(ListBox_TicketList.List(myindex, 0), ListBox_TicketList.List(myindex, 2))
+        Unload Me
+    End If
 End Sub
 
 Private Sub TextBox_SearchKey_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
@@ -451,6 +475,27 @@ Public Sub rmts_initialize()
     If RegStr = "" Then
         Exit Sub
     End If
+
+    If debug_ Then Debug.Print "rmts_initialize :: get regset : AllSetting" & RegStr
+    Set LocalSavedSettings = JSONLib.parse(RegStr)
+    Debug.Assert Err.Number = 0
+    If LocalSavedSettings.exists("Setting_Redmine_APIKEY") Then
+        Setting_Redmine_APIKEY = LocalSavedSettings("Setting_Redmine_APIKEY")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""Setting_Redmine_APIKEY"")"
+    End If
+    If LocalSavedSettings.exists("Setting_Redmine_URL") Then
+        Setting_Redmine_URL = LocalSavedSettings("Setting_Redmine_URL")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""Setting_Redmine_URL"")"
+    End If
+    If LocalSavedSettings.exists("webincreasemyAPIKey") Then
+        webincreasemyAPIKey = LocalSavedSettings("webincreasemyAPIKey")
+    Else
+        If debug_ Then Debug.Print "can not find LocalSavedSettings(""webincreasemyAPIKey"")"
+    End If
+    
+    
     If debug_ Then Debug.Print "UserForm_Initialize :: get regset : AllSetting" & RegStr
     Set LocalSavedSettings = JSONLib.parse(RegStr)
     Debug.Assert Err.Number = 0
