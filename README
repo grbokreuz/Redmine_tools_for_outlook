@@ -15,6 +15,8 @@ RMTC_Setting.frm
 RMTC_Setting.frx
 RMTM_Creater.frm
 RMTM_Creater.frx
+RMTS_Search.frm
+RMTS_Search.frx
 
 1.2.Install Necessary module
 these files are other person's works. please check licenses
@@ -47,7 +49,7 @@ Macro-"Delete_Reg"：
 grobkreuz <grobkreuz@gmail.com>
 
 4.License
-4.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx
+4.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx , RMTS_Search.frm , RMTS_Search.frx
 GNU GPL Ver.3 License
 
 4.2. Calender Form , JSONLib.cls 
