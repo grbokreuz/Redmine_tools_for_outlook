@@ -2,6 +2,7 @@ ReadMe
 
 create ticket for outlook mails and schedules
 ceate time entry
+search ticket , its dont use search API. because API is supported on redmine version 3.3 and upper. 
 
 1.Install
 1.1.Install Module
