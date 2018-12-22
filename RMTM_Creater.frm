@@ -241,6 +241,10 @@ Private Sub CommandButton5_Click()
     Redmint_CreateTicket
 End Sub
 
+Private Sub Label_assigned_to_me_Click()
+    Call set_activity_ticket_for_assigned_id_to_me(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+End Sub
+
 Private Sub Label_selected_ticket_Click()
     If debug_ Then Debug.Print "story open web start : " & Setting_Redmine_URL & "/issue/" & selected_ticket_id & "?key=" & Setting_Redmine_APIKEY
     If selected_ticket_id = "" Then
@@ -257,6 +261,8 @@ End Sub
 Private Sub Label_todaytimeentry_reload_Click()
     Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
 End Sub
+
+
 
 Private Sub ListBox_mytimeentry_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 
@@ -937,7 +943,8 @@ If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
     Dim total, offset, limit, nextoffset As Integer
     If debug_ Then Debug.Print "Calle :: set_backlog_ticket_for_selected_activity"
     Set Dic_Assigned_To_Me = New Dictionary
-
+    ComboBox_assigned_me.Clear
+    
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
     filter_tracker = ""

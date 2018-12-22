@@ -83,7 +83,7 @@ tmpstr = TextBox_Contetns.value
 
     TextBox_Contetns.value = _
         vbCrLf & _
-        "{{collapse(ÉÅÅ[Éã)" & _
+        "{{collapse(contents)" & _
         vbCrLf & _
         tmpstr & _
         vbCrLf & _

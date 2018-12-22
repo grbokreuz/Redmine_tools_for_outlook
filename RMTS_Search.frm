@@ -420,7 +420,8 @@ Private Sub ListBox_TicketList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 End Sub
 
 Private Sub TextBox_SearchKey_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If KeyCode Is Nothing Or KeyCode = vbKeyUp Or KeyCode = vbKeyRight Or KeyCode = vbKeyDown Or KeyCode = vbKeyLeft Or _
+    If ((Shift And olShiftStateShiftMask) > 0) Or ((Shift And olShiftStateAltMask) > 0) Or ((Shift And olShiftStateCtrlMask) > 0) Or _
+        KeyCode Is Nothing Or KeyCode = vbKeyUp Or KeyCode = vbKeyRight Or KeyCode = vbKeyDown Or KeyCode = vbKeyLeft Or _
         KeyCode = vbKeyNumlock Or KeyCode = vbKeyPrint Or KeyCode = vbKeyShift Or KeyCode = vbKeyEscape Or KeyCode = vbKeyCapital Or KeyCode = vbKeyDelete Or KeyCode = vbKeyBack Then
         Exit Sub
     End If
