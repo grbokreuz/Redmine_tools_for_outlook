@@ -198,6 +198,7 @@ End Sub
 Private Sub CommandButton2_Click()
     Dim ans As String
     Dim ticketid  As Integer
+    
     ans = InputBox("ticket id or kwy word", "get ticket", "")
     If ans = "" Then
         Exit Sub

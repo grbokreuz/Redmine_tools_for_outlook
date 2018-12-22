@@ -22,6 +22,7 @@ Public tmpdelluser As Object
 Public LocalSavedSettings As Object
 Public TransactionData As Object
 Public TransactionTimeEntryData As Object
+Public TransactionSearch As Object
 Public Mail_Subject As String
 Public Mail_Body As String
 Public Cal_Title As String
@@ -34,8 +35,11 @@ Public keywordsearchonAllTrackers As Integer
 Public searchContents As Integer
 Public debug_ As Boolean
 Public RMTS_Search_SingleMode As Boolean
+Public for_Japanese As Boolean
 Public Function first_initializer()
     debug_ = False
+    for_Japanese = True
+
     If debug_ Then Debug.Print "First Initializer Called"
     Setting_Redmine_URL = ""
     Setting_Redmine_APIKEY = ""
@@ -63,6 +67,7 @@ Public Function first_initializer()
     Mail_Body = ""
     Initialized = 1
     RMTS_Search_SingleMode = False
+
 End Function
 Public Function CreateHttpObject() As Object
     Dim objweb As Object

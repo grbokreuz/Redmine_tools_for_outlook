@@ -36,26 +36,10 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     End If
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
-    filter_status = ""
     filter_tracker = ""
     Set Var = New Dictionary
     Set tmpdic = New Dictionary
-    If debug_ Then Debug.Print JSONLib.toString(LocalSavedSettings("ListBox_Setting_Status_granpa"))
-    If LocalSavedSettings.exists("ListBox_Setting_Status_granpa") Then
-        Set tmpdic = LocalSavedSettings("ListBox_Setting_Status_granpa")
-        For Each Var In tmpdic
-            If filter_status = "" Then
-                filter_status = "status_id=" & tmpdic(Var)
-            Else
-                filter_status = filter_status & "|" & tmpdic(Var)
-            End If
-        Next Var
-        If filterstr = "" Then
-            filterstr = filter_status
-        Else
-            filterstr = filterstr & "&" & filter_status
-        End If
-    End If
+
     If LocalSavedSettings.exists("ListBox_Setting_Tracker_grandparent") Then
         Set tmpdic = LocalSavedSettings("ListBox_Setting_Tracker_grandparent")
         For Each Var In tmpdic
@@ -75,7 +59,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     Set Dic_Users = New Dictionary
     Dim subjson As Integer
     Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
+    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
@@ -92,7 +76,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     Do While total > nextoffset
         subjson = 1
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -161,26 +145,11 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     End If
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
-    filter_status = ""
+
     filter_tracker = ""
     Set Var = New Dictionary
     Set tmpdic = New Dictionary
-    If debug_ Then Debug.Print JSONLib.toString(LocalSavedSettings("ListBox_Setting_Status_parents"))
-    If LocalSavedSettings.exists("ListBox_Setting_Status_parents") Then
-        Set tmpdic = LocalSavedSettings("ListBox_Setting_Status_parents")
-        For Each Var In tmpdic
-            If filter_status = "" Then
-                filter_status = "status_id=" & tmpdic(Var)
-            Else
-                filter_status = filter_status & "|" & tmpdic(Var)
-            End If
-        Next Var
-        If filterstr = "" Then
-            filterstr = filter_status
-        Else
-            filterstr = filterstr & "&" & filter_status
-        End If
-    End If
+
     If LocalSavedSettings.exists("ListBox_Setting_Tracker_parents") Then
         Set tmpdic = LocalSavedSettings("ListBox_Setting_Tracker_parents")
         For Each Var In tmpdic
@@ -200,7 +169,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     Set Dic_Users = New Dictionary
     Dim subjson As Integer
     Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
+    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
@@ -217,7 +186,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     Do While total > nextoffset
         subjson = 1
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -285,26 +254,10 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     End If
     Dim filterstr, filter_status, filter_tracker  As String
     filterstr = ""
-    filter_status = ""
     filter_tracker = ""
     Set Var = New Dictionary
     Set tmpdic = New Dictionary
-    If debug_ Then Debug.Print JSONLib.toString(LocalSavedSettings("ListBox_Setting_Status_child"))
-    If LocalSavedSettings.exists("ListBox_Setting_Status_child") Then
-        Set tmpdic = LocalSavedSettings("ListBox_Setting_Status_child")
-        For Each Var In tmpdic
-            If filter_status = "" Then
-                filter_status = "status_id=" & tmpdic(Var)
-            Else
-                filter_status = filter_status & "|" & tmpdic(Var)
-            End If
-        Next Var
-        If filterstr = "" Then
-            filterstr = filter_status
-        Else
-            filterstr = filterstr & "&" & filter_status
-        End If
-    End If
+
     If LocalSavedSettings.exists("ListBox_Setting_Tracker_child") Then
         Set tmpdic = LocalSavedSettings("ListBox_Setting_Tracker_child")
         For Each Var In tmpdic
@@ -324,7 +277,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     Set Dic_Users = New Dictionary
     Dim subjson As Integer
     Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
+    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
@@ -341,7 +294,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     Do While total > nextoffset
         subjson = 1
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -403,6 +356,10 @@ Private Function reg_hit(ByRef str As String, ByRef ptrn As String)
     Set regex = Nothing
 End Function
 
+Private Sub ComboBox_Project_Change()
+    TransactionSearch("Default_Projects") = ComboBox_Project.value
+End Sub
+
 Public Sub CommandButton_SearchTicket_Click()
     If RMTS_Search.CommandButton_SearchTicket.Enabled = False Then
         Exit Sub
@@ -463,8 +420,20 @@ Private Sub ListBox_TicketList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 End Sub
 
 Private Sub TextBox_SearchKey_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If KeyCode <> 13 Then Exit Sub
-    Call CommandButton_SearchTicket_Click
+    If KeyCode Is Nothing Or KeyCode = vbKeyUp Or KeyCode = vbKeyRight Or KeyCode = vbKeyDown Or KeyCode = vbKeyLeft Or _
+        KeyCode = vbKeyNumlock Or KeyCode = vbKeyPrint Or KeyCode = vbKeyShift Or KeyCode = vbKeyEscape Or KeyCode = vbKeyCapital Or KeyCode = vbKeyDelete Or KeyCode = vbKeyBack Then
+        Exit Sub
+    End If
+
+    If KeyCode = 13 Then
+        Call CommandButton_SearchTicket_Click
+        Exit Sub
+    End If
+    If for_Japanese = True And 33 <= KeyCode And KeyCode <= 126 Then
+        KeyCode = 0
+        TextBox_SearchKey.IMEMode = vbIMEModeHiragana
+        Exit Sub
+    End If
 End Sub
 Public Sub rmts_initialize()
     Dim Var As Variant
@@ -535,6 +504,23 @@ Public Sub rmts_initialize()
             RMTS_Search.ComboBox_Project.AddItem Var
         Next Var
     End If
+
+    RegStr = GetSetting("OutlookRMTC", "Transaction", "TransactionSearch")
+    If debug_ Then Debug.Print "UserForm_Initialize :: get regset : TransactionSearch = " & RegStr
+    Set TransactionSearch = JSONLib.parse(RegStr)
+    Debug.Assert Err.Number = 0
+
+    If Not TransactionSearch Is Nothing Then
+        If debug_ Then Debug.Print "UserForm_Initialize :: TransactionSearch data " & JSONLib.toString(TransactionSearch)
+        If debug_ Then Debug.Print "apply TransactionSearch data to form"
+        If TransactionSearch.exists("Default_Projects") Then
+            RMTS_Search.ComboBox_Project.value = TransactionSearch("Default_Projects")
+        End If
+    Else
+        If debug_ Then Debug.Print "UserForm_Initialize :: TransactionSearch data is nothing "
+        Set TransactionSearch = New Dictionary
+    End If
+    
 End Sub
 
 Private Sub UserForm_Activate()
@@ -557,7 +543,7 @@ End Sub
 Private Sub UserForm_Initialize()
     If Initialized = 1 Then
         Call rmts_initialize
-        ListBox_TicketList.ColumnWidths = "30;65;80;200"
+        ListBox_TicketList.ColumnWidths = "30;65;100;200"
     Else
         MsgBox "Failed to Load"
         Me.Width = 0
@@ -566,3 +552,38 @@ Private Sub UserForm_Initialize()
     End If
 End Sub
 
+
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+    If Initialized = 1 Then
+        Dim JSONLib As New JSONLib
+        Dim json As Object
+        Dim RegStr As String
+
+        RegStr = JSONLib.toString(TransactionSearch)
+        If debug_ Then Debug.Print "UserForm_QueryClose :: save to reg : "; RegStr
+        Call save_transaction_Data_to_reg
+        If debug_ Then Debug.Print "UserForm_QueryClose ended"
+    Else
+        If debug_ Then Debug.Print "UserForm_QueryClose called but not initialized or going reload"
+        Exit Sub
+    End If
+End Sub
+Private Sub save_transaction_Data_to_reg()
+    If debug_ Then Debug.Print "Save TransactionSearch data to reg."
+    
+    If TransactionSearch Is Nothing Then
+        If debug_ Then Debug.Print "TransactionSearch Data is nohing"
+        Exit Sub
+    End If
+    
+    If TransactionSearch.exists("Default_Projects") Then
+        TransactionSearch("Default_Projects") = RMTS_Search.ComboBox_Project.value
+    Else
+        TransactionSearch.Add "Default_Projects", RMTS_Search.ComboBox_Project.value
+    End If
+
+    Dim JSONLib As New JSONLib
+    If debug_ Then Debug.Print "save_transaction_Data_to_reg :: Else data " & JSONLib.toString(TransactionSearch)
+    
+    SaveSetting "OutlookRMTC", "Transaction", "TransactionSearch", JSONLib.toString(TransactionSearch)
+End Sub
