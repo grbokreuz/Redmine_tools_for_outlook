@@ -161,7 +161,7 @@ Public Sub get_issue_membership_for_project_For_Setting(ByVal url As String, ByV
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
     ListBox_Users_from_rm.Clear
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/projects/" & project & "/memberships.json?key=" & apikey)
     Dim JSONLib As New JSONLib
@@ -177,9 +177,9 @@ Public Sub get_issue_membership_for_project_For_Setting(ByVal url As String, ByV
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
-    subjson = 0
+
     Do While total > limit + offset
-        subjson = 1
+
         If debug_ Then Debug.Print "limit " & json("limit")
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
@@ -191,12 +191,10 @@ Public Sub get_issue_membership_for_project_For_Setting(ByVal url As String, ByV
         total = jsonsub("total_count")
         offset = jsonsub("offset")
         limit = jsonsub("limit")
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("memberships")
             json("memberships").Add Var
         Next Var
-    End If
+    Loop
     For Each Var In json("memberships")
         If Var.exists("user") Then
             If Dic_Users.exists(Var("user")("name")) Then
@@ -215,7 +213,7 @@ Public Sub get_issue_project_For_Setting(ByVal url As String, ByVal apikey As St
     ComboBox_Project_for_usermember.Clear
     ListBox_Users_from_rm.Clear
     Set Dic_Projects_ID = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/projects.json?key=" & apikey)
     Dim JSONLib As New JSONLib
@@ -231,9 +229,9 @@ Public Sub get_issue_project_For_Setting(ByVal url As String, ByVal apikey As St
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
-    subjson = 0
+
     Do While total > limit + offset
-        subjson = 1
+
         If debug_ Then Debug.Print "limit " & json("limit")
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
@@ -245,12 +243,10 @@ Public Sub get_issue_project_For_Setting(ByVal url As String, ByVal apikey As St
         total = jsonsub("total_count")
         offset = jsonsub("offset")
         limit = jsonsub("limit")
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("projects")
             json("projects").Add Var
         Next Var
-    End If
+    Loop
     For Each Var In json("projects")
         Dic_Projects.Add Var("name"), Var("identifier")
         Dic_Projects_ID.Add Var("name"), Var("id")
@@ -288,7 +284,7 @@ Public Sub get_issue_statuses_For_Setting(ByVal url As String, ByVal apikey As S
     ListBox_Setting_Status_granpa.Clear
     ListBox_setting_Status.Clear
     ListBox_Setting_Status_child.Clear
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issue_statuses.json?key=" & apikey)
     Dim JSONLib As New JSONLib
@@ -304,9 +300,9 @@ Public Sub get_issue_statuses_For_Setting(ByVal url As String, ByVal apikey As S
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
-    subjson = 0
+
     Do While total > limit + offset
-        subjson = 1
+
         If debug_ Then Debug.Print "limit " & json("limit")
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
@@ -318,12 +314,11 @@ Public Sub get_issue_statuses_For_Setting(ByVal url As String, ByVal apikey As S
         total = jsonsub("total_count")
         offset = jsonsub("offset")
         limit = jsonsub("limit")
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("issue_statuses")
             json("issue_statuses").Add Var
         Next Var
-    End If
+    Loop
+
     For Each Var In json("issue_statuses")
         Dic_Statuses.Add Var("name"), Var("id")
         ListBox_Setting_Status_parents.AddItem (Var("name"))
@@ -343,7 +338,7 @@ Public Sub get_issue_tracker_For_Setting(ByVal url As String, ByVal apikey As St
     ListBox_New_Ticket_Activity.Clear
     ListBox_New_Ticket_Backlog.Clear
     ListBox_Setting_Tracker_child.Clear
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/trackers.json?key=" & apikey)
     Dim JSONLib As New JSONLib
@@ -359,9 +354,9 @@ Public Sub get_issue_tracker_For_Setting(ByVal url As String, ByVal apikey As St
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
-    subjson = 0
+
     Do While total > limit + offset
-        subjson = 1
+
         If debug_ Then Debug.Print "limit " & json("limit")
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
@@ -373,12 +368,11 @@ Public Sub get_issue_tracker_For_Setting(ByVal url As String, ByVal apikey As St
         total = jsonsub("total_count")
         offset = jsonsub("offset")
         limit = jsonsub("limit")
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("trackers")
             json("trackers").Add Var
         Next Var
-    End If
+    Loop
+
     For Each Var In json("trackers")
         Dic_Trackers.Add Var("name"), Var("id")
         ListBox_Setting_Tracker_parents.AddItem (Var("name"))
@@ -395,7 +389,7 @@ Public Sub get_issue_priority_For_Setting(ByVal url As String, ByVal apikey As S
     Set Dic_Priority = Nothing
     Set Dic_Priority = New Dictionary
     ListBox_setting_priority.Clear
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/enumerations/issue_priorities.json?key=" & apikey)
     Dim JSONLib As New JSONLib
@@ -411,9 +405,9 @@ Public Sub get_issue_priority_For_Setting(ByVal url As String, ByVal apikey As S
     total = json("total_count")
     offset = json("offset")
     limit = json("limit")
-    subjson = 0
+
     Do While total > limit + offset
-        subjson = 1
+
         If debug_ Then Debug.Print "limit " & json("limit")
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
@@ -425,12 +419,11 @@ Public Sub get_issue_priority_For_Setting(ByVal url As String, ByVal apikey As S
         total = jsonsub("total_count")
         offset = jsonsub("offset")
         limit = jsonsub("limit")
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("issue_priorities")
             json("issue_priorities").Add Var
         Next Var
-    End If
+    Loop
+
     For Each Var In json("issue_priorities")
         Dic_Priority.Add Var("name"), Var("id")
         ListBox_setting_priority.AddItem (Var("name"))
@@ -729,9 +722,6 @@ Private Sub Dic_Packager(ByRef dic_setthing As Object, ByVal keyname As String, 
     End If
     dic_setthing.Add keyname, dic
 End Sub
-Private Sub ListBox_Setting_Tracker_parents_Click()
-End Sub
-
 Private Sub UserForm_Initialize()
     If Initialized = 1 Then
         TextBox_RedmineURL.Text = Setting_Redmine_URL

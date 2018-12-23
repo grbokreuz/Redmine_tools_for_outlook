@@ -111,21 +111,21 @@ End Function
 Sub Redmint_CreateTicket()
  Dim myOlExp As Outlook.Explorer
  Dim myOlSel As Outlook.Selection
- Dim x As Integer
+ Dim X As Integer
  Set myOlExp = Application.ActiveExplorer
  Set myOlSel = myOlExp.Selection
  Call first_initializer
- For x = 1 To myOlSel.Count
-    If TypeName(myOlSel.Item(x)) = "AppointmentItem" Then
-        PostchkCal myOlSel.Item(x)
+ For X = 1 To myOlSel.Count
+    If TypeName(myOlSel.Item(X)) = "AppointmentItem" Then
+        PostchkCal myOlSel.Item(X)
         Call RMTC_Creater.rmtc_initializer
         RMTC_Creater.Show
-    ElseIf TypeName(myOlSel.Item(x)) = "MailItem" Then
-        PostchkMail myOlSel.Item(x)
+    ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
+        PostchkMail myOlSel.Item(X)
         Call RMTC_Creater.rmtc_initializer
         RMTC_Creater.Show
     End If
- Next x
+ Next X
  If myOlSel.Count = 0 Then
         Call RMTC_Creater.rmtc_initializer
         RMTC_Creater.Show
@@ -134,23 +134,23 @@ End Sub
 Sub Redmint_CreateTimeEntry()
  Dim myOlExp As Outlook.Explorer
  Dim myOlSel As Outlook.Selection
- Dim x As Integer
+ Dim X As Integer
  Set myOlExp = Application.ActiveExplorer
  Set myOlSel = myOlExp.Selection
  Call first_initializer
- For x = 1 To myOlSel.Count
-    If TypeName(myOlSel.Item(x)) = "AppointmentItem" Then
-        PostchkCal myOlSel.Item(x)
+ For X = 1 To myOlSel.Count
+    If TypeName(myOlSel.Item(X)) = "AppointmentItem" Then
+        PostchkCal myOlSel.Item(X)
         Call first_initializer
         Call RMTM_Creater.rmtm_initializer
         RMTM_Creater.Show
-    ElseIf TypeName(myOlSel.Item(x)) = "MailItem" Then
-        PostchkMail myOlSel.Item(x)
+    ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
+        PostchkMail myOlSel.Item(X)
         Call first_initializer
         Call RMTM_Creater.rmtm_initializer
         RMTM_Creater.Show
     End If
- Next x
+ Next X
  If myOlSel.Count = 0 Then
     Call RMTM_Creater.rmtm_initializer
     RMTM_Creater.Show

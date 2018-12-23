@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTS_Search
    ClientHeight    =   5325
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   8475.001
+   ClientWidth     =   5160
    OleObjectBlob   =   "RMTS_Search.frx":0000
    StartUpPosition =   1  'オーナー フォームの中央
 End
@@ -14,6 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 ' for redmine api under 3.3 , upper virsion is not support search api
+' /redmine/search.xml?q=querystring&all_words=1&titles_only=0&attachments=1&options=1&open_issues=1&scope=my_projects
 Public project As String
 Public Function set_param(ByVal inp_id As String, ByVal inp_name As String)
     project = inp_id
@@ -57,7 +58,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+    
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
@@ -71,10 +72,9 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
@@ -85,12 +85,11 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("issues")
             json("issues").Add Var
         Next Var
-    End If
+    Loop
+
     listline = ListBox_TicketList.ListCount
     For Each Var In json("issues")
         Dim tmpsubject As String
@@ -105,7 +104,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
                 ListBox_TicketList.List(listline, 0) = Var("id")
                 ListBox_TicketList.List(listline, 1) = Var("tracker")("name")
                 ListBox_TicketList.List(listline, 2) = Var("subject")
-                ListBox_TicketList.List(listline, 3) = Mid(Var("description"), 1, 50)
+                ListBox_TicketList.List(listline, 3) = convert_no_return("" & Var("description"))
                 listline = listline + 1
             Else
                 If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id is " & Var("project")("id") & " not " & myProject & " and subject is " & tmpsubject & " not " & TextBox_SearchKey.Text
@@ -117,7 +116,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
             ListBox_TicketList.List(listline, 0) = Var("id")
             ListBox_TicketList.List(listline, 1) = Var("tracker")("name")
             ListBox_TicketList.List(listline, 2) = Var("subject")
-            ListBox_TicketList.List(listline, 3) = Mid(Var("description"), 1, 50)
+            ListBox_TicketList.List(listline, 3) = convert_no_return("" & Var("description"))
             listline = listline + 1
         Else
             If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id is " & Var("project")("id") & " not " & myProject & " and subject is " & tmpsubject & " not " & TextBox_SearchKey.Text
@@ -167,7 +166,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
@@ -181,10 +180,10 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
+
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
@@ -195,12 +194,11 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("issues")
             json("issues").Add Var
         Next Var
-    End If
+    Loop
+
     listline = ListBox_TicketList.ListCount
     For Each Var In json("issues")
         Dim tmpsubject As String
@@ -214,7 +212,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
                 ListBox_TicketList.List(listline, 0) = Var("id")
                 ListBox_TicketList.List(listline, 1) = Var("tracker")("name")
                 ListBox_TicketList.List(listline, 2) = Var("subject")
-                ListBox_TicketList.List(listline, 3) = Mid(Var("description"), 1, 50)
+                ListBox_TicketList.List(listline, 3) = convert_no_return("" & Var("description"))
                 listline = listline + 1
             Else
                 If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id is " & Var("project")("id") & " not " & myProject & " and subject is " & tmpsubject & " not " & TextBox_SearchKey.Text
@@ -226,7 +224,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
             ListBox_TicketList.List(listline, 0) = Var("id")
             ListBox_TicketList.List(listline, 1) = Var("tracker")("name")
             ListBox_TicketList.List(listline, 2) = Var("subject")
-            ListBox_TicketList.List(listline, 3) = Mid(Var("description"), 1, 50)
+            ListBox_TicketList.List(listline, 3) = convert_no_return("" & Var("description"))
             listline = listline + 1
         Else
             If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id is " & Var("project")("id") & " not " & myProject & " and subject is " & tmpsubject & " not " & TextBox_SearchKey.Text
@@ -275,7 +273,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
@@ -289,10 +287,10 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
+
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
@@ -303,12 +301,11 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("issues")
             json("issues").Add Var
         Next Var
-    End If
+    Loop
+
     listline = ListBox_TicketList.ListCount
     For Each Var In json("issues")
         Dim tmpsubject As String
@@ -322,7 +319,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
                 ListBox_TicketList.List(listline, 0) = Var("id")
                 ListBox_TicketList.List(listline, 1) = Var("tracker")("name")
                 ListBox_TicketList.List(listline, 2) = Var("subject")
-                ListBox_TicketList.List(listline, 3) = Mid(Var("description"), 1, 50)
+                ListBox_TicketList.List(listline, 3) = convert_no_return("" & Var("description"))
                 listline = listline + 1
             Else
                 If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id is " & Var("project")("id") & " not " & myProject & " and subject is " & tmpsubject & " not " & TextBox_SearchKey.Text
@@ -334,7 +331,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
             ListBox_TicketList.List(listline, 0) = Var("id")
             ListBox_TicketList.List(listline, 1) = Var("tracker")("name")
             ListBox_TicketList.List(listline, 2) = Var("subject")
-            ListBox_TicketList.List(listline, 3) = Mid(Var("description"), 1, 50)
+            ListBox_TicketList.List(listline, 3) = convert_no_return("" & Var("description"))
             listline = listline + 1
         Else
             If debug_ Then Debug.Print "this ticket " & Var("id") & " is not match which project_id is " & Var("project")("id") & " not " & myProject & " and subject is " & tmpsubject & " not " & TextBox_SearchKey.Text
@@ -394,6 +391,7 @@ Public Sub CommandButton_SearchTicket_Click()
     CommandButton_SearchTicket.Enabled = True
 End Sub
 
+
 Private Sub ListBox_TicketList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     If ListBox_TicketList.value = "" Then
         Exit Sub
@@ -418,7 +416,17 @@ Private Sub ListBox_TicketList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
         Unload Me
     End If
 End Sub
-
+Private Sub ListBox_TicketList_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Dim buf As Long
+    If Button = 2 Then
+        buf = Int((Y + 1) / ListBox_TicketList.Font.Size)
+        If buf > ListBox_TicketList.ListCount - 1 Then
+            buf = ListBox_TicketList.ListCount - 1
+        End If
+        ListBox_TicketList.Selected(buf) = True
+        MsgBox ListBox_TicketList.List(buf, 3)
+    End If
+End Sub
 Private Sub TextBox_SearchKey_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
     If ((Shift And olShiftStateShiftMask) > 0) Or ((Shift And olShiftStateAltMask) > 0) Or ((Shift And olShiftStateCtrlMask) > 0) Or _
         KeyCode Is Nothing Or KeyCode = vbKeyUp Or KeyCode = vbKeyRight Or KeyCode = vbKeyDown Or KeyCode = vbKeyLeft Or _
@@ -537,14 +545,10 @@ Private Sub Button_Settings_Click()
         Unload Me
     End If
 End Sub
-Private Sub UserForm_Click()
-
-End Sub
-
 Private Sub UserForm_Initialize()
     If Initialized = 1 Then
         Call rmts_initialize
-        ListBox_TicketList.ColumnWidths = "30;65;100;200"
+        ListBox_TicketList.ColumnWidths = "30;45;100;0"
     Else
         MsgBox "Failed to Load"
         Me.Width = 0
@@ -588,3 +592,24 @@ Private Sub save_transaction_Data_to_reg()
     
     SaveSetting "OutlookRMTC", "Transaction", "TransactionSearch", JSONLib.toString(TransactionSearch)
 End Sub
+Private Function convert_no_return(ByRef str As String)
+    Dim outstr As String
+    Dim siriesstr As String
+    siriesstr = "AorD"
+    str = Mid(str, 1, 500)
+    outstr = ""
+    For k = 1 To Len(str)
+        If Hex(Asc(Mid(str, k, 1))) = "D" Or Hex(Asc(Mid(str, k, 1))) = "A" Then
+            If siriesstr = "AorD" Then
+            Else
+                outstr = outstr & Mid(str, k, 1)
+                siriesstr = "AorD"
+            End If
+        Else
+            outstr = outstr & Mid(str, k, 1)
+            siriesstr = Hex(Asc(Mid(str, k, 1)))
+        End If
+
+    Next
+    convert_no_return = outstr
+End Function

@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTM_Creater 
-   Caption         =   "Redmine TimeEntry Maker"
+   Caption         =   "Redmine Ticket Search"
    ClientHeight    =   6810
    ClientLeft      =   120
    ClientTop       =   465
@@ -69,6 +69,9 @@ Private Sub ComboBox_parentActivity_Change()
         Call favorite_initialize(selected_ticket_id)
 
         Call set_backlog_ticket_for_selected_activity(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+
+        ComboBox_parentBacklog.Enabled = True
+    
     End If
 End Sub
 
@@ -234,6 +237,8 @@ Private Sub CommandButton4_Click()
     ComboBox_parentBacklog.Clear
     ComboBox_parentActivity.Clear
     ComboBox_ParentStory.value = ""
+    ComboBox_parentActivity.Enabled = False
+    ComboBox_parentBacklog.Enabled = False
 End Sub
 
 Private Sub CommandButton5_Click()
@@ -464,6 +469,9 @@ Private Sub ComboBox_Project_Change()
     ComboBox_ParentStory.Clear
     ComboBox_parentActivity.Clear
     ComboBox_parentBacklog.Clear
+    
+    ComboBox_parentActivity.Enabled = False
+    ComboBox_parentBacklog.Enabled = False
  '   TextBox_Comment.Text = ""
     Call set_story_ticket_for_selected_project(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
     If debug_ Then Debug.Print "ComboBox_Project_Change :: ended"
@@ -472,7 +480,8 @@ End Sub
 Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
     If debug_ Then Debug.Print "ÅöstartÅöCalle :: set_story_ticket_for_selected_project"
     Dim JSONLib As New JSONLib
-    Dim json, tmpdic As Object
+    Dim json As Object
+    Dim tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
     If debug_ Then Debug.Print "Calle :: set_story_ticket_for_selected_project"
@@ -528,7 +537,7 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
@@ -541,10 +550,9 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
@@ -556,11 +564,9 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
 
-        If subjson = 1 Then
-            For Each Var In jsonsub("issues")
-                json("issues").Add Var
-            Next Var
-        End If
+        For Each Var In jsonsub("issues")
+            json("issues").Add Var
+        Next Var
     Loop
     For Each Var In json("issues")
             If Var.exists("parent") = False Then
@@ -641,7 +647,7 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim subjson As Integer
+
     Dim jsonstring As String
     
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
@@ -657,16 +663,11 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-        
     Do While total > nextoffset
-        subjson = 1
-
         Dim subjsonstr As String
-
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
-
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -675,12 +676,10 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-        
-        If subjson = 1 Then
-            For Each Var In jsonsub("issues")
-                json("issues").Add Var
-            Next Var
-        End If
+        For Each Var In jsonsub("issues")
+            json("issues").Add Var
+        Next Var
+
     Loop
     For Each Var In json("issues")
             If debug_ Then Debug.Print Var("id") & " : localfilter is enable"
@@ -711,6 +710,10 @@ Private Sub ComboBox_ParentStory_Change()
         Call favorite_initialize(selected_ticket_id)
 
         Call set_activity_ticket_for_selected_story(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+
+        ComboBox_parentActivity.Enabled = True
+        ComboBox_parentBacklog.Enabled = False
+    
     End If
  '   TextBox_Comment.Text = ""
 End Sub
@@ -778,7 +781,7 @@ If debug_ Then Debug.Print "ÅöstartÅö set_backlog_ticket_for_selected_activity"
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
     Set json = New Dictionary
@@ -791,10 +794,10 @@ If debug_ Then Debug.Print "ÅöstartÅö set_backlog_ticket_for_selected_activity"
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
+
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
 
@@ -806,12 +809,9 @@ If debug_ Then Debug.Print "ÅöstartÅö set_backlog_ticket_for_selected_activity"
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-
-        If subjson = 1 Then
-            For Each Var In jsonsub("issues")
-                json("issues").Add Var
-            Next Var
-        End If
+        For Each Var In jsonsub("issues")
+            json("issues").Add Var
+        Next Var
     Loop
     For Each Var In json("issues")
             If debug_ Then Debug.Print Var("id") & " : localfilter is enable"
@@ -865,7 +865,7 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
     If debug_ Then Debug.Print "ÅöstartÅöCalle :: check_my_timeentry_on_today"
-    Dim subjson As Integer
+
     Dim jsonstring As String
     ListBox_mytimeentry.Clear
     jsonstring = GetData(url & "time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "&key=" & apikey)
@@ -878,10 +878,10 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
+
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
         Dim jsonsub As Object
@@ -892,11 +892,9 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-        If subjson = 1 Then
-            For Each Var In jsonsub("issues")
-                json("issues").Add Var
-            Next Var
-        End If
+        For Each Var In jsonsub("issues")
+            json("issues").Add Var
+        Next Var
     Loop
     Dim totaltimeentry As Single
     Dim myname As String
@@ -970,7 +968,7 @@ If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&" & filterstr)
     Set json = New Dictionary
@@ -983,10 +981,10 @@ If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
+
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&offset=" & nextoffset & "&" & filterstr)
 
@@ -999,11 +997,10 @@ If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
 
-        If subjson = 1 Then
-            For Each Var In jsonsub("issues")
-                json("issues").Add Var
-            Next Var
-        End If
+        For Each Var In jsonsub("issues")
+            json("issues").Add Var
+        Next Var
+
     Loop
     For Each Var In json("issues")
        ComboBox_assigned_me.AddItem "#" & Var("id") & ":" & Var("subject")

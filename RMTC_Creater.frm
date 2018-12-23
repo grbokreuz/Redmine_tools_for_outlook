@@ -179,6 +179,7 @@ Private Sub Label_GotoWeb_grapa_Click()
         openweb (Setting_Redmine_URL & "/issues/" & Dic_Story(ComboBox_ParentStory.Text))
     End If
 End Sub
+
 Private Sub LabelLabel_GotWeb_parent_Click()
     If debug_ Then Debug.Print "activity open web start : " & Setting_Redmine_URL & "/issue/" & Dic_Activity(ComboBox_parentActivity) & "?key=" & Setting_Redmine_APIKEY
     If Dic_Activity(ComboBox_parentActivity.Text) = "" Then
@@ -343,7 +344,7 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
@@ -356,10 +357,10 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
+
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
@@ -370,12 +371,13 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("issues")
             json("issues").Add Var
         Next Var
-    End If
+
+    Loop
+
+
     For Each Var In json("issues")
         If Var("project")("id") = myProject Then
             ComboBox_ParentStory.AddItem "#" & Var("id") & ":" & Var("subject")
@@ -445,7 +447,7 @@ Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As 
     End If
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
-    Dim subjson As Integer
+
     Dim jsonstring As String
     jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
     Set json = New Dictionary
@@ -458,10 +460,10 @@ Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As 
     offset = json("offset")
     limit = json("limit")
     nextoffset = val(limit) + val(offset)
-    subjson = 0
+
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
-        subjson = 1
+
         Dim subjsonstr As String
         subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
@@ -472,12 +474,11 @@ Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As 
         limit = jsonsub("limit")
         nextoffset = val(limit) + val(offset)
         If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
-    Loop
-    If subjson = 1 Then
         For Each Var In jsonsub("issues")
             json("issues").Add Var
         Next Var
-    End If
+    Loop
+
     For Each Var In json("issues")
         If Var.exists("parent") Then
             If Var("project")("id") = myProject And Var("parent")("id") = myStory Then
