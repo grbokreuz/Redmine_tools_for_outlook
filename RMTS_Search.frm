@@ -357,6 +357,10 @@ Private Sub ComboBox_Project_Change()
     TransactionSearch("Default_Projects") = ComboBox_Project.value
 End Sub
 
+Private Sub CommandButton_Crear_Click()
+    TextBox_SearchKey.Text = ""
+End Sub
+
 Public Sub CommandButton_SearchTicket_Click()
     If RMTS_Search.CommandButton_SearchTicket.Enabled = False Then
         Exit Sub
@@ -424,7 +428,12 @@ Private Sub ListBox_TicketList_MouseDown(ByVal Button As Integer, ByVal Shift As
             buf = ListBox_TicketList.ListCount - 1
         End If
         ListBox_TicketList.Selected(buf) = True
-        MsgBox ListBox_TicketList.List(buf, 3)
+    '    MsgBox ListBox_TicketList.List(buf, 3)
+        Call RMTM_Creater.rmtm_initializer
+        Call RMTM_Creater.set_select_ticket_id(ListBox_TicketList.List(buf, 0), ListBox_TicketList.List(buf, 2))
+        Unload Me
+        RMTM_Creater.Show
+    
     End If
 End Sub
 Private Sub TextBox_SearchKey_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)

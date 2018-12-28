@@ -157,10 +157,33 @@ Sub Redmint_CreateTimeEntry()
  End If
 End Sub
 Sub Redmint_Search()
+ Dim myOlExp As Outlook.Explorer
+ Dim myOlSel As Outlook.Selection
+ Set myOlExp = Application.ActiveExplorer
+ Set myOlSel = myOlExp.Selection
  Call first_initializer
  Call RMTS_Search.rmts_initialize
- RMTS_Search_SingleMode = True
- RMTS_Search.Show
+ 
+ For X = 1 To myOlSel.Count
+    If TypeName(myOlSel.Item(X)) = "AppointmentItem" Then
+        RMTS_Search_SingleMode = True
+        RMTS_Search.TextBox_SearchKey = "==EntryID=" & myOlSel.Item(X).EntryID & "=="
+        RMTS_Search.CommandButton_SearchTicket_Click
+        RMTS_Search.Show
+    ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
+
+        RMTS_Search_SingleMode = True
+        RMTS_Search.TextBox_SearchKey = "==EntryID=" & myOlSel.Item(X).EntryID & "=="
+        RMTS_Search.CommandButton_SearchTicket_Click
+        RMTS_Search.Show
+    End If
+ Next X
+
+If myOlSel.Count = 0 Then
+        RMTS_Search_SingleMode = True
+    '   RMTS_Search.CommandButton_SearchTicket_Click
+        RMTS_Search.Show
+End If
 End Sub
 Sub Dump(Text As String)
 Dim k As Long
@@ -170,14 +193,14 @@ Next
 End Sub
 Function PostchkMail(obj As MailItem)
     Mail_Subject = ConvertString(obj.subject)
-    Mail_Body = ConvertString(obj.Body)
+    Mail_Body = ConvertString(obj.Body & vbNewLine & "==EntryID=" & obj.EntryID & "==")
     RMTC_Creater.TextBox_Contetns = Mail_Body
-    RMTC_Creater.TextBox_Subject = Mail_Subject
+    RMTC_Creater.TextBox_Subject = Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
 End Function
 Function PostchkCal(obj As AppointmentItem)
     Mail_Subject = ConvertString(obj.subject)
     Mail_Body = ConvertString(obj.Body)
-    RMTC_Creater.TextBox_Contetns = Mail_Body
+    RMTC_Creater.TextBox_Contetns = Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
     RMTC_Creater.TextBox_Subject = Mail_Subject
     RMTM_Creater.ScrollBar_timeentry.value = 0 - ConvertString(obj.Duration) / 60 / 0.25
     RMTM_Creater.TextBox_Comment.Text = ConvertString(obj.ConversationTopic) & Mail_Subject
