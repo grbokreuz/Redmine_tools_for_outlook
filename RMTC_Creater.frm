@@ -516,6 +516,10 @@ Public Function postredmineJson(ByVal tmyracker As String, ByVal parentid As Str
         If debug_ Then Debug.Print "post data :: ComboBox_Asignedto is " & LocalSavedSettings("ListBox_User_Settings")(ComboBox_Asignedto.Text)
         RequestBody = RequestBody & "<assigned_to_id>" & LocalSavedSettings("ListBox_User_Settings")(ComboBox_Asignedto.Text) & "</assigned_to_id>"
     End If
+    If ComboBox_Status.value <> "" Then
+        If debug_ Then Debug.Print "post data :: ComboBox_Status is " & ComboBox_Status.Text
+        RequestBody = RequestBody & "<status_id>" & LocalSavedSettings("ListBox_setting_Status")(ComboBox_Status.Text) & "</status_id>"
+    End If
     If ComboBox_Estimated.value <> "" Then
         If debug_ Then Debug.Print "post data :: ComboBox_Estimated is " & ComboBox_Estimated.Text
         RequestBody = RequestBody & "<estimated_hours>" & ComboBox_Estimated.Text & "</estimated_hours>"
