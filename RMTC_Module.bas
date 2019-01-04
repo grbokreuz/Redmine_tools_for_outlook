@@ -194,8 +194,8 @@ End Sub
 Function PostchkMail(obj As MailItem)
     Mail_Subject = ConvertString(obj.subject)
     Mail_Body = ConvertString(obj.Body & vbNewLine & "==EntryID=" & obj.EntryID & "==")
-    RMTC_Creater.TextBox_Contetns = Mail_Body
-    RMTC_Creater.TextBox_Subject = Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
+    RMTC_Creater.TextBox_Contetns = Mail_Body & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
+    RMTC_Creater.TextBox_Subject = Mail_Subject
 End Function
 Function PostchkCal(obj As AppointmentItem)
     Mail_Subject = ConvertString(obj.subject)
