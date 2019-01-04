@@ -38,14 +38,15 @@ For Redmine
   Enable JSON, RestAPI on your redmine setting
   
 For Outlook
-Macro-"Redmine_CreateTicket"：
+Macro-"Redmint_CreateTicket"：
  For create Ticket
-Macro-"Redmine_CreateTimeEntry"：
+Macro-"Redmint_CreateTimeEntry"：
  For Create Time Entry
+Macro-"Redmint_Search"
+ For Search ticket. Mail ID if You selected
 Macro-"Delete_Reg"：
  Delete Registory Data
-Macro-"Redmine_Search"
- For Search ticket
+
 
 3.Copy Rights
 grobkreuz <grobkreuz@gmail.com>
@@ -100,10 +101,12 @@ Development - Tools - References - "Windows Scripting Runtime" を有効にし�
 あなたのＲｅｄｍｉｎｅ で、 JSONとRestAPIを有効にします
  
 For Outlook
-Macro-"Redmine_CreateTicket"：
+Macro-"Redmint_CreateTicket"：
  チケットをつくります
-Macro-"Redmine_CreateTimeEntry"：
+Macro-"Redmint_CreateTimeEntry"：
  時間を記録します
+Macro-"Redmint_Search"：
+ チケットを検索します。メールが選択されている場合は、メールIDで検索します
 Macro-"Delete_Reg"：
  設定を消します
  
