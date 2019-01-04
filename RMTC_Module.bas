@@ -193,7 +193,7 @@ Next
 End Sub
 Function PostchkMail(obj As MailItem)
     Mail_Subject = ConvertString(obj.subject)
-    Mail_Body = ConvertString(obj.Body & vbNewLine & "==EntryID=" & obj.EntryID & "==")
+    Mail_Body = ConvertString(obj.Body)
     RMTC_Creater.TextBox_Contetns = Mail_Body & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
     RMTC_Creater.TextBox_Subject = Mail_Subject
 End Function
