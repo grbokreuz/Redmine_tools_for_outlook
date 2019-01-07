@@ -22,8 +22,10 @@ Private Sub ComboBox_parentActivity_Change()
     If Dic_Activity.exists(ComboBox_parentActivity.value) Then
         If debug_ Then Debug.Print "ComboBox_ParentStory_Change :: select change : Activity id = " & Dic_Activity(ComboBox_parentActivity.value)
         LabelLabel_GotWeb_parent.Caption = Dic_Activity(ComboBox_parentActivity.value)
+        LabelLabel_GotWeb_parent.ForeColor = &H8000000D
     Else
         LabelLabel_GotWeb_parent.Caption = "New"
+        LabelLabel_GotWeb_parent.ForeColor = &H80000007
     End If
         
 End Sub
@@ -57,9 +59,11 @@ Private Sub ComboBox_ParentStory_Change()
     If Dic_Story.exists(ComboBox_ParentStory.value) Then
         If debug_ Then Debug.Print "ComboBox_ParentStory_Change :: select change : Story id = " & Dic_Story(ComboBox_ParentStory.value)
         Label_GotoWeb_grapa.Caption = Dic_Story(ComboBox_ParentStory.value)
+        Label_GotoWeb_grapa.ForeColor = &H8000000D
         Call set_activity_ticket_for_selected_project(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
     Else
         Label_GotoWeb_grapa.Caption = "New"
+        Label_GotoWeb_grapa.ForeColor = &H80000007
     End If
     
 End Sub
