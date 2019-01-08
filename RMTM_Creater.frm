@@ -23,7 +23,7 @@ End Sub
 
 Private Sub Button_Settings_Click()
     Call save_transaction_Data_to_reg
-    RMTC_Setting.Show
+    RMTC_Setting.Show vbModeless
     If Initialized = 1 Then
         Call rmtm_initializer
         Call RMTS_Search.rmts_initialize
@@ -116,7 +116,7 @@ End Sub
 Private Sub CommandButton_StartCaleder_Click()
    Call CalenderForm.setDate(GetToday())
    Call CalenderForm.setCallBackControl(Label_ActivityDate)
-   CalenderForm.Show
+   CalenderForm.Show vbModeless
 End Sub
 Private Function GetToday()
     GetToday = Year(Now) & "/" & Month(Now) & "/" & Day(Now)
@@ -220,7 +220,7 @@ Private Sub CommandButton2_Click()
         Call RMTS_Search.set_param(myProject, ComboBox_Project.value)
         RMTS_Search.TextBox_SearchKey = ans
         RMTS_Search.CommandButton_SearchTicket_Click
-        RMTS_Search.Show
+        RMTS_Search.Show vbModeless
         Call favorite_initialize(selected_ticket_id)
     End If
 End Sub
@@ -288,6 +288,9 @@ End Sub
 
 Private Sub TextBox_timeentryhours_Change()
 
+    If TextBox_timeentryhours.value = "" Then
+        TextBox_timeentryhours.value = "0"
+    End If
     ScrollBar_timeentry.value = 0 - CSng(TextBox_timeentryhours.value) / 0.25
 
 End Sub
