@@ -432,7 +432,7 @@ Private Sub ListBox_TicketList_MouseDown(ByVal Button As Integer, ByVal Shift As
         Call RMTM_Creater.rmtm_initializer
         Call RMTM_Creater.set_select_ticket_id(ListBox_TicketList.List(buf, 0), ListBox_TicketList.List(buf, 2))
         Unload Me
-        RMTM_Creater.Show
+        RMTM_Creater.Show vbModeless
     
     End If
 End Sub
@@ -547,7 +547,7 @@ Private Sub UserForm_Activate()
         End If
 End Sub
 Private Sub Button_Settings_Click()
-    RMTC_Setting.Show
+    RMTC_Setting.Show vbModeless
     If Initialized = 1 Then
         Call rmts_initialize
     Else

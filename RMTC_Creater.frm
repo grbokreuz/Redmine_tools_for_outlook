@@ -163,7 +163,7 @@ Private Sub CommandButton_toTimeentry_Click()
     Call RMTM_Creater.rmtm_initializer
     Call RMTM_Creater.set_select_ticket_id(RMTM_Con_parentid, TextBox_Subject.Text)
     Unload Me
-    RMTM_Creater.Show
+    RMTM_Creater.Show vbModeless
     Call rmtc_initializer
 End Sub
 
@@ -207,7 +207,7 @@ Private Sub TextBox_Contetns_Change()
 End Sub
 Private Sub Button_Settings_Click()
     Call save_transaction_Data_to_reg
-    RMTC_Setting.Show
+    RMTC_Setting.Show vbModeless
     If Initialized = 1 Then
         Call rmtc_initializer
         Call RMTS_Search.rmts_initialize
@@ -218,12 +218,12 @@ End Sub
 Private Sub CommandButton_DueCaleder_Click()
    Call CalenderForm.setDate(GetToday())
    Call CalenderForm.setCallBackControl(Label_DueDate)
-   CalenderForm.Show
+   CalenderForm.Show vbModeless
 End Sub
 Private Sub CommandButton_StartCaleder_Click()
    Call CalenderForm.setDate(GetToday())
    Call CalenderForm.setCallBackControl(Label_StartDate)
-   CalenderForm.Show
+   CalenderForm.Show vbModeless
 End Sub
 Private Function GetToday()
     GetToday = Year(Now) & "/" & Month(Now) & "/" & Day(Now)

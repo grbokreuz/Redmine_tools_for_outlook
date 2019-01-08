@@ -119,16 +119,16 @@ Sub Redmint_CreateTicket()
     If TypeName(myOlSel.Item(X)) = "AppointmentItem" Then
         PostchkCal myOlSel.Item(X)
         Call RMTC_Creater.rmtc_initializer
-        RMTC_Creater.Show
+        RMTC_Creater.Show vbModeless
     ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
         PostchkMail myOlSel.Item(X)
         Call RMTC_Creater.rmtc_initializer
-        RMTC_Creater.Show
+        RMTC_Creater.Show vbModeless
     End If
  Next X
  If myOlSel.Count = 0 Then
         Call RMTC_Creater.rmtc_initializer
-        RMTC_Creater.Show
+        RMTC_Creater.Show vbModeless
  End If
 End Sub
 Sub Redmint_CreateTimeEntry()
@@ -143,17 +143,17 @@ Sub Redmint_CreateTimeEntry()
         PostchkCal myOlSel.Item(X)
         Call first_initializer
         Call RMTM_Creater.rmtm_initializer
-        RMTM_Creater.Show
+        RMTM_Creater.Show vbModeless
     ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
         PostchkMail myOlSel.Item(X)
         Call first_initializer
         Call RMTM_Creater.rmtm_initializer
-        RMTM_Creater.Show
+        RMTM_Creater.Show vbModeless
     End If
  Next X
  If myOlSel.Count = 0 Then
     Call RMTM_Creater.rmtm_initializer
-    RMTM_Creater.Show
+    RMTM_Creater.Show vbModeless
  End If
 End Sub
 Sub Redmint_Search()
@@ -169,20 +169,20 @@ Sub Redmint_Search()
         RMTS_Search_SingleMode = True
         RMTS_Search.TextBox_SearchKey = "==EntryID=" & myOlSel.Item(X).EntryID & "=="
         RMTS_Search.CommandButton_SearchTicket_Click
-        RMTS_Search.Show
+        RMTS_Search.Show vbModeless
     ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
 
         RMTS_Search_SingleMode = True
         RMTS_Search.TextBox_SearchKey = "==EntryID=" & myOlSel.Item(X).EntryID & "=="
         RMTS_Search.CommandButton_SearchTicket_Click
-        RMTS_Search.Show
+        RMTS_Search.Show vbModeless
     End If
  Next X
 
 If myOlSel.Count = 0 Then
         RMTS_Search_SingleMode = True
     '   RMTS_Search.CommandButton_SearchTicket_Click
-        RMTS_Search.Show
+        RMTS_Search.Show vbModeless
 End If
 End Sub
 Sub Dump(Text As String)
