@@ -1,6 +1,6 @@
 ReadMe
 
-Redmine_tools_for_outlook ver 1.4.10
+Redmine_tools_for_outlook ver 1.5.0
 create ticket for outlook mails and schedules
 ceate time entry
 search ticket , its not use search API. because this API is supported on redmine version 3.3 and upper.  linked mail Entry ID
