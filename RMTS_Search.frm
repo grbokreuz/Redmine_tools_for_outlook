@@ -359,6 +359,7 @@ End Sub
 
 Private Sub CommandButton_Crear_Click()
     TextBox_SearchKey.Text = ""
+    TextBox_SearchKey.SetFocus
 End Sub
 
 Public Sub CommandButton_SearchTicket_Click()
