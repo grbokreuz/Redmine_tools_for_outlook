@@ -281,7 +281,18 @@ Private Sub ListBox_mytimeentry_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 
     End If
 End Sub
+Private Sub ListBox_mytimeentry_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Dim buf As Long
+    If Button = 2 Then
+        buf = Int((Y + 1) / ListBox_mytimeentry.Font.Size)
+        If buf > ListBox_mytimeentry.ListCount - 1 Then
+            buf = ListBox_mytimeentry.ListCount - 1
+        End If
+        ListBox_mytimeentry.Selected(buf) = True
 
+    Call get_ticket_subject_for_caption(ListBox_mytimeentry.List(buf, 0), Setting_Redmine_URL, Setting_Redmine_APIKEY)
+    End If
+End Sub
 Private Sub ScrollBar_timeentry_Change()
     TextBox_timeentryhours.Text = 0 - ScrollBar_timeentry.value * 0.25
 End Sub
@@ -861,7 +872,30 @@ Public Sub get_ticket_subject(ByRef ticketnumber As Integer, ByVal url As String
     Set JSONLib = Nothing
 If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject"
 End Sub
+Public Sub get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal url As String, ByVal apikey As String)
+    Dim JSONLib As New JSONLib
+    Dim json, tmpdic As Object
+    Dim Var As Variant
+    Dim total, offset, limit, nextoffset As Integer
+    If debug_ Then Debug.Print "ÅöstartÅöCalle :: get_ticket_subject_for_caption"
+    Dim jsonstring As String
 
+    ListBox_mytimeentry.ControlTipText = ""
+    
+    jsonstring = GetData(url & "/issues/" & ticketnumber & ".json?key=" & apikey)
+    Set json = New Dictionary
+    Set json = JSONLib.parse(jsonstring)
+    If json Is Nothing Then
+        MsgBox "not found ticket."
+        Call CommandButton2_Click
+        Exit Sub
+    End If
+    Set Var = json("issue")
+    MsgBox "#" & Var("id") & ":" & Chr(13) & Var("subject") & Chr(13) & Var("description"), vbOKOnly, "ticket #" & Var("id")
+    Set json = Nothing
+    Set JSONLib = Nothing
+If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject_for_caption"
+End Sub
 Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
