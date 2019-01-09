@@ -67,8 +67,9 @@ Redmine_tools_for_outlook
 outlook で選択したメールや予定を元にRedmineにチケットを作成する（アイテムのIDを自動付与）
 時間記録を行う（カレンダーの作業時間を自動で取り込む）
 時間管理用 お気に入りリスト管理機能、assined タスク表示機能
-設定管理
+報告した 作業を一覧表示する
 チケット検索機能（メールやカレンダーを選択した場合は、アイテムのIDが自動でセット、キーワード検索も可）
+Web のチケットを開く
  
 1.Install
 1.1.Install Module
@@ -99,7 +100,7 @@ JSONLib.cls
 Development - Tools - References - "Windows Scripting Runtime" を有効にします
 
 2.Hou to Use
-あなたのＲｅｄｍｉｎｅ で、 JSONとRestAPIを有効にします
+あなたのRedmine で、 JSONとRestAPIを有効にします
  
 For Outlook
 Macro-"Redmint_CreateTicket"：
