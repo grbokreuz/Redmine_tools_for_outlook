@@ -47,18 +47,16 @@ Macro-"Redmint_Search"
 Macro-"Delete_Reg"：
  Delete Registory Data
 
-
-3.Copy Rights
+3.License
+3.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx , RMTS_Search.frm , RMTS_Search.frx
+GNU GPL Ver.3 License
+Copy Rights
 grobkreuz <grobkreuz@gmail.com>
 
-4.License
-4.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx , RMTS_Search.frm , RMTS_Search.frx
-GNU GPL Ver.3 License
-
-4.2. Calender Form , JSONLib.cls 
+3.2. Calender Form , JSONLib.cls 
 See web site
 
-5.Support
+4.Support
 None
  
 読んでください 
@@ -112,15 +110,14 @@ Macro-"Redmint_Search"：
 Macro-"Delete_Reg"：
  設定を消します
  
-3.Copy Rights
+3.License
+3.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx , RMTS_Search.frm , RMTS_Search.frx
+GNU GPL Ver.3 License
+Copy Rights
 grobkreuz <grobkreuz@gmail.com>
 
-4.License
-4.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx , RMTS_Search.frm , RMTS_Search.frx
-GNU GPL Ver.3 License
-
-4.2. Calender Form , JSONLib.cls 
+3.2. Calender Form , JSONLib.cls 
 See web site
 
-5.Support
+4.Support
 None
