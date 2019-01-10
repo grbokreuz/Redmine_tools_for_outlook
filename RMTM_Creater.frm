@@ -314,7 +314,7 @@ Private Sub UserForm_Initialize()
         Me.Height = 0
         Exit Sub
     End If
-    
+
 End Sub
 Private Sub UserForm_Activate()
         If time_entries <> 1 Then
@@ -438,7 +438,7 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
     Call set_activity_ticket_for_assigned_id_to_me(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
 
     ListBox_mytimeentry.ColumnWidths = "30;65;25;50"
-    
+    TextBox_Comment.SetFocus
 End Sub
 Private Function draw_favorite_box()
     ComboBox_fevoritelist.Clear
@@ -891,7 +891,29 @@ Public Sub get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal u
         Exit Sub
     End If
     Set Var = json("issue")
-    MsgBox "#" & Var("id") & ":" & Chr(13) & Var("subject") & Chr(13) & Var("description"), vbOKOnly, "ticket #" & Var("id")
+    Dim descri As String
+    descri = Var("description")
+
+    descri = Replace(descri, vbCrLf + vbCrLf + vbCrLf + vbCrLf, vbCrLf + vbCrLf)
+    descri = Replace(descri, Chr(13) + Chr(10) + Chr(13) + Chr(10), Chr(13) + Chr(10))
+
+
+    descri = Replace(descri, vbCr + vbCr, vbCr)
+    descri = Replace(descri, Chr(13) + Chr(13), Chr(13))
+
+    descri = Replace(descri, vbLf + vbLf, vbLf)
+    descri = Replace(descri, Chr(10) + Chr(10), Chr(10))
+  
+  '  descri = Replace(descri, vbCrLf, "")
+  '  descri = Replace(descri, Chr(13) + Chr(10), "")
+
+  '  descri = Replace(descri, vbCr, "")
+  '  descri = Replace(descri, Chr(13), "")
+
+  '  descri = Replace(descri, vbLf, "")
+  '  descri = Replace(descri, Chr(10), "")
+
+    MsgBox "#" & Var("id") & ":" & Var("subject") & Chr(13) & "--------------------------------" & Chr(13) & descri & Chr(13) & "--------------------------------", vbOKOnly, "ticket #" & Var("id")
     Set json = Nothing
     Set JSONLib = Nothing
 If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject_for_caption"
