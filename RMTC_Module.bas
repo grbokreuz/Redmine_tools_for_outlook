@@ -229,4 +229,47 @@ Public Sub openweb(ByVal urlpath As String)
     WSH.Run urlpath, 3
     Set WSH = Nothing
 End Sub
+Public Sub get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal url As String, ByVal apikey As String)
+    Dim JSONLib As New JSONLib
+    Dim json, tmpdic As Object
+    Dim Var As Variant
+    Dim total, offset, limit, nextoffset As Integer
+    If debug_ Then Debug.Print "ÅöstartÅöCalle :: get_ticket_subject_for_caption"
+    Dim jsonstring As String
 
+    
+    jsonstring = GetData(url & "/issues/" & ticketnumber & ".json?key=" & apikey)
+    Set json = New Dictionary
+    Set json = JSONLib.parse(jsonstring)
+    If json Is Nothing Then
+        MsgBox "not found ticket."
+        Exit Sub
+    End If
+    Set Var = json("issue")
+    Dim descri As String
+    descri = Var("description")
+
+    descri = Replace(descri, vbCrLf + vbCrLf + vbCrLf + vbCrLf, vbCrLf + vbCrLf)
+    descri = Replace(descri, Chr(13) + Chr(10) + Chr(13) + Chr(10), Chr(13) + Chr(10))
+
+
+    descri = Replace(descri, vbCr + vbCr, vbCr)
+    descri = Replace(descri, Chr(13) + Chr(13), Chr(13))
+
+    descri = Replace(descri, vbLf + vbLf, vbLf)
+    descri = Replace(descri, Chr(10) + Chr(10), Chr(10))
+  
+  '  descri = Replace(descri, vbCrLf, "")
+  '  descri = Replace(descri, Chr(13) + Chr(10), "")
+
+  '  descri = Replace(descri, vbCr, "")
+  '  descri = Replace(descri, Chr(13), "")
+
+  '  descri = Replace(descri, vbLf, "")
+  '  descri = Replace(descri, Chr(10), "")
+
+    MsgBox "#" & Var("id") & ":" & Var("subject") & Chr(13) & "--------------------------------" & Chr(13) & descri & Chr(13) & "--------------------------------", vbOKOnly, "ticket #" & Var("id")
+    Set json = Nothing
+    Set JSONLib = Nothing
+If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject_for_caption"
+End Sub

@@ -261,7 +261,15 @@ Private Sub Label_selected_ticket_Click()
         openweb (Setting_Redmine_URL & "/issues/" & selected_ticket_id)
     End If
 End Sub
-
+Private Sub Label_selected_ticket_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Dim buf As Long
+    If Button = 2 Then
+        If selected_ticket_id = "" Then
+            Exit Sub
+        End If
+        Call get_ticket_subject_for_caption("" + selected_ticket_id, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+    End If
+End Sub
 
 Private Sub Label_todaytimeentry_reload_Click()
     Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
@@ -872,52 +880,7 @@ Public Sub get_ticket_subject(ByRef ticketnumber As Integer, ByVal url As String
     Set JSONLib = Nothing
 If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject"
 End Sub
-Public Sub get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal url As String, ByVal apikey As String)
-    Dim JSONLib As New JSONLib
-    Dim json, tmpdic As Object
-    Dim Var As Variant
-    Dim total, offset, limit, nextoffset As Integer
-    If debug_ Then Debug.Print "ÅöstartÅöCalle :: get_ticket_subject_for_caption"
-    Dim jsonstring As String
 
-    ListBox_mytimeentry.ControlTipText = ""
-    
-    jsonstring = GetData(url & "/issues/" & ticketnumber & ".json?key=" & apikey)
-    Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
-    If json Is Nothing Then
-        MsgBox "not found ticket."
-        Call CommandButton2_Click
-        Exit Sub
-    End If
-    Set Var = json("issue")
-    Dim descri As String
-    descri = Var("description")
-
-    descri = Replace(descri, vbCrLf + vbCrLf + vbCrLf + vbCrLf, vbCrLf + vbCrLf)
-    descri = Replace(descri, Chr(13) + Chr(10) + Chr(13) + Chr(10), Chr(13) + Chr(10))
-
-
-    descri = Replace(descri, vbCr + vbCr, vbCr)
-    descri = Replace(descri, Chr(13) + Chr(13), Chr(13))
-
-    descri = Replace(descri, vbLf + vbLf, vbLf)
-    descri = Replace(descri, Chr(10) + Chr(10), Chr(10))
-  
-  '  descri = Replace(descri, vbCrLf, "")
-  '  descri = Replace(descri, Chr(13) + Chr(10), "")
-
-  '  descri = Replace(descri, vbCr, "")
-  '  descri = Replace(descri, Chr(13), "")
-
-  '  descri = Replace(descri, vbLf, "")
-  '  descri = Replace(descri, Chr(10), "")
-
-    MsgBox "#" & Var("id") & ":" & Var("subject") & Chr(13) & "--------------------------------" & Chr(13) & descri & Chr(13) & "--------------------------------", vbOKOnly, "ticket #" & Var("id")
-    Set json = Nothing
-    Set JSONLib = Nothing
-If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject_for_caption"
-End Sub
 Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object

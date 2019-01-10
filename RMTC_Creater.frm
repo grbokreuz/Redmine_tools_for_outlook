@@ -183,7 +183,15 @@ Private Sub Label_GotoWeb_grapa_Click()
         openweb (Setting_Redmine_URL & "/issues/" & Dic_Story(ComboBox_ParentStory.Text))
     End If
 End Sub
-
+Private Sub Label_GotoWeb_grapa_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Dim buf As Long
+    If Button = 2 Then
+        If Label_GotoWeb_grapa.Caption = "New" Then
+            Exit Sub
+        End If
+        Call get_ticket_subject_for_caption(Label_GotoWeb_grapa.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+    End If
+End Sub
 Private Sub LabelLabel_GotWeb_parent_Click()
     If debug_ Then Debug.Print "activity open web start : " & Setting_Redmine_URL & "/issue/" & Dic_Activity(ComboBox_parentActivity) & "?key=" & Setting_Redmine_APIKEY
     If Dic_Activity(ComboBox_parentActivity.Text) = "" Then
@@ -196,7 +204,15 @@ Private Sub LabelLabel_GotWeb_parent_Click()
     End If
 
 End Sub
-
+Private Sub LabelLabel_GotWeb_parent_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Dim buf As Long
+    If Button = 2 Then
+        If LabelLabel_GotWeb_parent.Caption = "New" Then
+            Exit Sub
+        End If
+        Call get_ticket_subject_for_caption(LabelLabel_GotWeb_parent.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+    End If
+End Sub
 Private Sub TextBox_Contetns_Change()
     Label_MaxLength_count.Caption = TextBox_Contetns.TextLength
     If TextBox_Contetns.TextLength > 6000 Then
@@ -277,6 +293,8 @@ Private Sub UserForm_Initialize()
         Me.Height = 0
         Exit Sub
     End If
+
+    
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -663,5 +681,6 @@ If debug_ Then Debug.Print "rmtc_initializer Called"
     RMTC_Creater.TextBox_Contetns.SelStart = 0
     RMTC_Creater.TextBox_Contetns.SetFocus
     RMTC_Creater.TextBox_Subject.SelStart = 0
+    TextBox_Subject.SetFocus
 End Sub
 
