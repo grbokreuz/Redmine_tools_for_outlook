@@ -39,6 +39,7 @@ Private Sub ComboBox_assigned_me_Change()
          Label_selected_ticket.Caption = ComboBox_assigned_me.Text
          Label_selected_ticket.ControlTipText = Label_selected_ticket.Caption
     End If
+    Call favorite_initialize(selected_ticket_id)
 End Sub
 
 Private Sub ComboBox_fevoritelist_Change()
