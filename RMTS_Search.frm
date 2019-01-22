@@ -517,6 +517,9 @@ Public Sub rmts_initialize()
     Else
        If debug_ Then Debug.Print "can not find LocalSavedSettings(""searchContents"")"
     End If
+
+    RMTS_Search.ComboBox_Project.Clear
+
     If LocalSavedSettings.exists("Dic_Projects") Then
         Set tmpdic = LocalSavedSettings("Dic_Projects")
         For Each Var In tmpdic

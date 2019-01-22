@@ -81,6 +81,10 @@ Private Sub CommandButton_cleartext_Click()
     TextBox_Subject.Text = ""
 End Sub
 
+Private Sub CommandButton_CopyTitle2Contets_Click()
+    TextBox_Contetns.Text = TextBox_Contetns.Text & vbCrLf & TextBox_Subject.Text
+End Sub
+
 Private Sub CommandButton_Edit2_Click()
 Dim tmpstr As String
 tmpstr = TextBox_Contetns.value
@@ -223,7 +227,7 @@ Private Sub TextBox_Contetns_Change()
 End Sub
 Private Sub Button_Settings_Click()
     Call save_transaction_Data_to_reg
-    RMTC_Setting.Show vbModeless
+    RMTC_Setting.Show
     If Initialized = 1 Then
         Call rmtc_initializer
         Call RMTS_Search.rmts_initialize

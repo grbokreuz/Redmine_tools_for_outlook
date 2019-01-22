@@ -119,16 +119,16 @@ Sub Redmint_CreateTicket()
     If TypeName(myOlSel.Item(X)) = "AppointmentItem" Then
         PostchkCal myOlSel.Item(X)
         Call RMTC_Creater.rmtc_initializer
-        RMTC_Creater.Show vbModeless
+        RMTC_Creater.Show
     ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
         PostchkMail myOlSel.Item(X)
         Call RMTC_Creater.rmtc_initializer
-        RMTC_Creater.Show vbModeless
+        RMTC_Creater.Show
     End If
  Next X
  If myOlSel.Count = 0 Then
         Call RMTC_Creater.rmtc_initializer
-        RMTC_Creater.Show vbModeless
+        RMTC_Creater.Show
  End If
 End Sub
 Sub Redmint_CreateTimeEntry()
@@ -143,17 +143,17 @@ Sub Redmint_CreateTimeEntry()
         PostchkCal myOlSel.Item(X)
         Call first_initializer
         Call RMTM_Creater.rmtm_initializer
-        RMTM_Creater.Show vbModeless
+        RMTM_Creater.Show
     ElseIf TypeName(myOlSel.Item(X)) = "MailItem" Then
         PostchkMail myOlSel.Item(X)
         Call first_initializer
         Call RMTM_Creater.rmtm_initializer
-        RMTM_Creater.Show vbModeless
+        RMTM_Creater.Show
     End If
  Next X
  If myOlSel.Count = 0 Then
     Call RMTM_Creater.rmtm_initializer
-    RMTM_Creater.Show vbModeless
+    RMTM_Creater.Show
  End If
 End Sub
 Sub Redmint_Search()
@@ -202,7 +202,7 @@ Function PostchkCal(obj As AppointmentItem)
     Mail_Body = ConvertString(obj.Body)
     RMTC_Creater.TextBox_Contetns = Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
     RMTC_Creater.TextBox_Subject = Mail_Subject
-    RMTM_Creater.ScrollBar_timeentry.value = 0 - ConvertString(obj.Duration) / 60 / 0.25
+    RMTM_Creater.ScrollBar_timeentry.value = ConvertString(obj.Duration) / 60 / 0.25
     RMTM_Creater.TextBox_Comment.Text = ConvertString(obj.ConversationTopic) & Mail_Subject
     Cal_Title = ConvertString(obj.ConversationTopic)
 End Function

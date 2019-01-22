@@ -23,7 +23,7 @@ End Sub
 
 Private Sub Button_Settings_Click()
     Call save_transaction_Data_to_reg
-    RMTC_Setting.Show vbModeless
+    RMTC_Setting.Show
     If Initialized = 1 Then
         Call rmtm_initializer
         Call RMTS_Search.rmts_initialize
@@ -221,7 +221,7 @@ Private Sub CommandButton2_Click()
         Call RMTS_Search.set_param(myProject, ComboBox_Project.value)
         RMTS_Search.TextBox_SearchKey = ans
         RMTS_Search.CommandButton_SearchTicket_Click
-        RMTS_Search.Show vbModeless
+        RMTS_Search.Show
         Call favorite_initialize(selected_ticket_id)
     End If
 End Sub
@@ -303,15 +303,38 @@ Private Sub ListBox_mytimeentry_MouseDown(ByVal Button As Integer, ByVal Shift A
     End If
 End Sub
 Private Sub ScrollBar_timeentry_Change()
-    TextBox_timeentryhours.Text = 0 - ScrollBar_timeentry.value * 0.25
+    TextBox_timeentryhours.Text = ScrollBar_timeentry.value * 0.25
 End Sub
 
 Private Sub TextBox_timeentryhours_Change()
 
-    If TextBox_timeentryhours.value = "" Then
-        TextBox_timeentryhours.value = "0"
+    Dim timevalue As Integer
+
+    If debug_ Then Debug.Print "row value " & TextBox_timeentryhours.value
+
+    If IsNumeric(TextBox_timeentryhours.value) = False Then
+        If debug_ Then Debug.Print "is not numeric"
+        ScrollBar_timeentry.value = 0
+        Exit Sub
     End If
-    ScrollBar_timeentry.value = 0 - CSng(TextBox_timeentryhours.value) / 0.25
+    
+    If CSng(TextBox_timeentryhours.value) < 0 Then
+        If debug_ Then Debug.Print "is under 0"
+        ScrollBar_timeentry.value = 0
+        Exit Sub
+    End If
+        
+    timevalue = CSng(TextBox_timeentryhours.value) / 0.25
+
+    If debug_ Then Debug.Print "converted value " & timevalue
+        
+    If timevalue <= 0 Then
+        timevalue = 0
+    End If
+
+    If debug_ Then Debug.Print "set value " & timevalue
+
+    ScrollBar_timeentry.value = timevalue
 
 End Sub
 
