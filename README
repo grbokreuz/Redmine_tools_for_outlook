@@ -31,7 +31,7 @@ JSONLib.cls
 you will get from https://github.com/markwilliams970/RallyRestToolkitForVBA/blob/master/VBAProjectFiles/JSONLib.cls
  
 1.3. Enable Runtime
-Development - Tools - References - "Windows Scripting Runtime" to Enable
+Development - Tools - References - "Microsoft Scripting Runtime" to Enable
 
 2.Hou to Use
 For Redmine
@@ -95,7 +95,7 @@ JSONLib.cls
 あなたは得られます https://github.com/markwilliams970/RallyRestToolkitForVBA/blob/master/VBAProjectFiles/JSONLib.cls
  
 1.3. Enable Runtime
-Development - Tools - References - "Windows Scripting Runtime" を有効にします
+Development - Tools - References - "Microsoft Scripting Runtime" を有効にします
 
 2.Hou to Use
 あなたのRedmine で、 JSONとRestAPIを有効にします
