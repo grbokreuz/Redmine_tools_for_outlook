@@ -28,7 +28,7 @@ you will get from https://github.com/satoshi71/vbacalendar
 
 1.2.2.JSONLib
 JSONLib.cls
-you will get from https://github.com/markwilliams970/RallyRestToolkitForVBA/blob/master/VBAProjectFiles/JSONLib.cls
+you will get from https://code.google.com/archive/p/vba-json/source/default/source
  
 1.3. Enable Runtime
 Development - Tools - References - "Microsoft Scripting Runtime" to Enable
