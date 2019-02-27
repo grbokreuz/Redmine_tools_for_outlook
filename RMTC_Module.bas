@@ -278,12 +278,12 @@ Public Sub DebugPrintFile(varData As Variant)
   Dim lngFileNum As Long
   Dim strLogFile As String
   
-  strLogFile = "C:\Users\1060081\Desktop\OutlookVBA_DebugPrint.txt"
-  lngFileNum = FreeFile()
-  Open strLogFile For Append As #lngFileNum
-  Print #lngFileNum, varData
-  Close #lngFileNum
+'  strLogFile = "C:\temp\OutlookVBA_DebugPrint.txt"
+'  lngFileNum = FreeFile()
+'  Open strLogFile For Append As #lngFileNum
+'  Print #lngFileNum, varData
+'  Close #lngFileNum
   
-   Debug.Print varData
+  Debug.Print varData
 
 End Sub
