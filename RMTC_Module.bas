@@ -273,3 +273,17 @@ Public Sub get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal u
     Set JSONLib = Nothing
 If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject_for_caption"
 End Sub
+Public Sub DebugPrintFile(varData As Variant)
+
+  Dim lngFileNum As Long
+  Dim strLogFile As String
+  
+  strLogFile = "C:\Users\1060081\Desktop\OutlookVBA_DebugPrint.txt"
+  lngFileNum = FreeFile()
+  Open strLogFile For Append As #lngFileNum
+  Print #lngFileNum, varData
+  Close #lngFileNum
+  
+   Debug.Print varData
+
+End Sub
