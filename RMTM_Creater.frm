@@ -3,7 +3,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTM_Creater
    Caption         =   "Redmine Create TimeEntry"
    ClientHeight    =   6810
    ClientLeft      =   120
-   ClientTop       =   465
+   ClientTop       =   468
    ClientWidth     =   5340
    OleObjectBlob   =   "RMTM_Creater.frx":0000
    StartUpPosition =   1  'オーナー フォームの中央
@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 Private selected_ticket_id As String
 
 Public Sub set_select_ticket_id(ByRef ticketid As String, ByRef subject As String)
@@ -299,7 +300,7 @@ Private Sub ListBox_mytimeentry_MouseDown(ByVal Button As Integer, ByVal Shift A
         End If
         ListBox_mytimeentry.Selected(buf) = True
 
-    Call get_ticket_subject_for_caption(ListBox_mytimeentry.List(buf, 0), Setting_Redmine_URL, Setting_Redmine_APIKEY)
+    ListBox_mytimeentry.List(buf, 1) = get_ticket_subject_for_caption(ListBox_mytimeentry.List(buf, 0), Setting_Redmine_URL, Setting_Redmine_APIKEY, buf)
     End If
 End Sub
 Private Sub ScrollBar_timeentry_Change()
@@ -469,7 +470,7 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
     
     Call set_activity_ticket_for_assigned_id_to_me(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
 
-    ListBox_mytimeentry.ColumnWidths = "30;65;25;50"
+    ListBox_mytimeentry.ColumnWidths = "30;50;65;25;50"
     TextBox_Comment.SetFocus
 End Sub
 Private Function draw_favorite_box()
@@ -953,9 +954,9 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
         If debug_ Then Debug.Print Var("issue")("id") & "/" & Var("activity")("name") & "/" & Var("hours") & "/" & Var("comments") & "++=" & totaltimeentry
         ListBox_mytimeentry.AddItem ""
         ListBox_mytimeentry.List(listline, 0) = Var("issue")("id")
-        ListBox_mytimeentry.List(listline, 1) = Var("activity")("name")
-        ListBox_mytimeentry.List(listline, 2) = Var("hours")
-        ListBox_mytimeentry.List(listline, 3) = Var("comments")
+        ListBox_mytimeentry.List(listline, 2) = Var("activity")("name")
+        ListBox_mytimeentry.List(listline, 3) = Var("hours")
+        ListBox_mytimeentry.List(listline, 4) = Var("comments")
         listline = listline + 1
     Next Var
     Set json = Nothing

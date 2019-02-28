@@ -194,13 +194,13 @@ End Sub
 Function PostchkMail(obj As MailItem)
     Mail_Subject = ConvertString(obj.subject)
     Mail_Body = ConvertString(obj.Body)
-    RMTC_Creater.TextBox_Contetns = Mail_Body & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
+    RMTC_Creater.TextBox_Contetns = vbNewLine & "{{collapse(eMail)" & vbNewLine & Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "}}" & vbNewLine & "{{collapse(EntryID)" & vbNewLine & "==EntryID=" & obj.EntryID & "==" & "}}" & vbNewLine
     RMTC_Creater.TextBox_Subject = Mail_Subject
 End Function
 Function PostchkCal(obj As AppointmentItem)
     Mail_Subject = ConvertString(obj.subject)
     Mail_Body = ConvertString(obj.Body)
-    RMTC_Creater.TextBox_Contetns = Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "==EntryID=" & obj.EntryID & "=="
+    RMTC_Creater.TextBox_Contetns = vbNewLine & "{{collapse(eMail)" & vbNewLine & Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "}}" & vbNewLine & "{{collapse(EntryID)" & vbNewLine & "==EntryID=" & obj.EntryID & "==" & "}}" & vbNewLine
     RMTC_Creater.TextBox_Subject = Mail_Subject
     RMTM_Creater.ScrollBar_timeentry.value = ConvertString(obj.Duration) / 60 / 0.25
     RMTM_Creater.TextBox_Comment.Text = ConvertString(obj.ConversationTopic) & Mail_Subject
@@ -214,6 +214,12 @@ Public Function ConvertString(ByVal val As String)
     tmpstr = Replace(tmpstr, """", "&quot;")
     tmpstr = Replace(tmpstr, "'", "&apos;")
     tmpstr = Replace(tmpstr, "&", "&amp;")
+    tmpstr = Replace(tmpstr, vbCrLf + vbCrLf + vbCrLf + vbCrLf, vbCrLf + vbCrLf)
+    tmpstr = Replace(tmpstr, Chr(13) + Chr(10) + Chr(13) + Chr(10), Chr(13) + Chr(10))
+    tmpstr = Replace(tmpstr, vbCr + vbCr, vbCr)
+    tmpstr = Replace(tmpstr, Chr(13) + Chr(13), Chr(13))
+    tmpstr = Replace(tmpstr, vbLf + vbLf, vbLf)
+    tmpstr = Replace(tmpstr, Chr(10) + Chr(10), Chr(10))
     ConvertString = tmpstr
 End Function
 Sub Delete_Reg()
@@ -229,21 +235,23 @@ Public Sub openweb(ByVal urlpath As String)
     WSH.Run urlpath, 3
     Set WSH = Nothing
 End Sub
-Public Sub get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal url As String, ByVal apikey As String)
+Public Function get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal url As String, ByVal apikey As String, ByRef col As Long)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
-    If debug_ Then Debug.Print "ÅöstartÅöCalle :: get_ticket_subject_for_caption"
+    If debug_ Then DebugPrintFile "ÅöstartÅöCalle :: get_ticket_subject_for_caption"
     Dim jsonstring As String
 
     
     jsonstring = GetData(url & "/issues/" & ticketnumber & ".json?key=" & apikey)
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
+
+
     If json Is Nothing Then
         MsgBox "not found ticket."
-        Exit Sub
+        Exit Function
     End If
     Set Var = json("issue")
     Dim descri As String
@@ -268,11 +276,15 @@ Public Sub get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal u
   '  descri = Replace(descri, vbLf, "")
   '  descri = Replace(descri, Chr(10), "")
 
-    MsgBox "#" & Var("id") & ":" & Var("subject") & Chr(13) & "--------------------------------" & Chr(13) & descri & Chr(13) & "--------------------------------", vbOKOnly, "ticket #" & Var("id")
+    If col >= 0 And RMTM_Creater.ListBox_mytimeentry.List(col, 1) <> "" Then
+        MsgBox "#" & Var("id") & ":" & Var("subject") & Chr(13) & "--------------------------------" & Chr(13) & descri & Chr(13) & "--------------------------------", vbOKOnly, "ticket #" & Var("id")
+    End If
     Set json = Nothing
     Set JSONLib = Nothing
-If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject_for_caption"
-End Sub
+    
+    get_ticket_subject_for_caption = Var("subject")
+If debug_ Then DebugPrintFile "ÅöendÅö get_ticket_subject_for_caption"
+End Function
 Public Sub DebugPrintFile(varData As Variant)
 
   Dim lngFileNum As Long

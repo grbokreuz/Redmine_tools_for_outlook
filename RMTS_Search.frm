@@ -3,7 +3,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTS_Search
    Caption         =   "RMTS_Search"
    ClientHeight    =   5325
    ClientLeft      =   120
-   ClientTop       =   465
+   ClientTop       =   468
    ClientWidth     =   5160
    OleObjectBlob   =   "RMTS_Search.frx":0000
    StartUpPosition =   1  'オーナー フォームの中央
@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 ' for redmine api under 3.3 , upper virsion is not support search api
 ' /redmine/search.xml?q=querystring&all_words=1&titles_only=0&attachments=1&options=1&open_issues=1&scope=my_projects
 Public project As String

@@ -20,7 +20,7 @@ Const INVALID_KEY       As Long = 6
 '   parse string and create JSON object (Dictionary or Collection in VB)
 '
 Public Function parse(ByRef str As String) As Object
-
+'    If debug_ Then DebugPrintFile "JSONLIB parse  called ( " & str & " )"
     Dim index As Long
     index = 1
     
@@ -40,8 +40,11 @@ End Function
 '   parse collection of key/value (Dictionary in VB)
 '
 Private Function parseObject(ByRef str As String, ByRef index As Long) As Object
+'    If debug_ Then DebugPrintFile "JSONLIB parseObject called ( " & index & " )"
     Dim a As Integer
     Set parseObject = New Dictionary
+    
+    If debug_ Then DebugPrintFile "index is " & index & " on (" & str & " )"
     
     ' "{"
     Call skipChar(str, index)
@@ -72,7 +75,7 @@ End Function
 '   parse list (Collection in VB)
 '
 Private Function parseArray(ByRef str As String, ByRef index As Long) As Collection
-
+'    If debug_ Then DebugPrintFile "JSONLIB parseArray called ( " & index & " )"
     Set parseArray = New Collection
     
     ' "["
@@ -102,7 +105,7 @@ End Function
 '   parse string / number / object / array / true / false / null
 '
 Private Function parseValue(ByRef str As String, ByRef index As Long)
-
+ '   If debug_ Then DebugPrintFile "JSONLIB parseValue called ( " & index & " )"
     Call skipChar(str, index)
     
     Select Case Mid(str, index, 1)
@@ -126,7 +129,7 @@ End Function
 '   parse string
 '
 Private Function parseString(ByRef str As String, ByRef index As Long) As String
-
+'    If debug_ Then DebugPrintFile "JSONLIB parseString called ( " & index & " )"
     Dim quote   As String
     Dim char    As String
     Dim code    As String
@@ -180,7 +183,7 @@ End Function
 '   parse number
 '
 Private Function parseNumber(ByRef str As String, ByRef index As Long)
-
+'    If debug_ Then DebugPrintFile "JSONLIB parseNumber called ( " & index & " )"
     Dim value   As String
     Dim char    As String
     
@@ -207,7 +210,7 @@ End Function
 '   parse true / false
 '
 Private Function parseBoolean(ByRef str As String, ByRef index As Long) As Boolean
-
+'    If debug_ Then DebugPrintFile "JSONLIB parseBoolean called ( " & index & " )"
     Call skipChar(str, index)
     If Mid(str, index, 4) = "true" Then
         parseBoolean = True
@@ -225,7 +228,7 @@ End Function
 '   parse null
 '
 Private Function parseNull(ByRef str As String, ByRef index As Long)
-
+'    If debug_ Then DebugPrintFile "JSONLIB parseNull called ( " & index & " )"
     Call skipChar(str, index)
     If Mid(str, index, 4) = "null" Then
         parseNull = Null
@@ -237,7 +240,7 @@ Private Function parseNull(ByRef str As String, ByRef index As Long)
 End Function
 
 Private Function parseKey(ByRef str As String, ByRef index As Long) As String
-
+ '   If debug_ Then DebugPrintFile "JSONLIB parseKey called ( " & index & " )"
     Dim dquote  As Boolean
     Dim squote  As Boolean
     Dim char    As String
@@ -245,7 +248,7 @@ Private Function parseKey(ByRef str As String, ByRef index As Long) As String
     Call skipChar(str, index)
     Do While index > 0 And index <= Len(str)
         char = Mid(str, index, 1)
- '       Debug.Print char
+ '       DebugPrintFile char
         Select Case (char)
         Case """"
             dquote = Not dquote
@@ -286,7 +289,7 @@ End Function
 '   skip special character
 '
 Private Sub skipChar(ByRef str As String, ByRef index As Long)
-
+'    If debug_ Then DebugPrintFile "JSONLIB skipChar called ( " & index & " )"
     While index > 0 And index <= Len(str) And InStr(vbCrLf & vbCr & vbLf & vbTab & " ", Mid(str, index, 1))
         index = index + 1
     Wend
@@ -294,7 +297,7 @@ Private Sub skipChar(ByRef str As String, ByRef index As Long)
 End Sub
 
 Public Function toString(ByRef obj As Variant) As String
-
+'    If debug_ Then DebugPrintFile "JSONLIB toString called"
     Select Case VarType(obj)
         Case vbNull
             toString = "null"
@@ -337,7 +340,7 @@ Public Function toString(ByRef obj As Variant) As String
 End Function
 
 Private Function encode(str) As String
-    
+'    If debug_ Then DebugPrintFile "JSONLIB encode called"
     Dim i, j, aL1, aL2, c, p
 
     aL1 = Array(&H22, &H5C, &H2F, &H8, &HC, &HA, &HD, &H9)
@@ -366,6 +369,7 @@ Private Function encode(str) As String
 End Function
 
 Private Function multiArray(aBD, iBC, sPS, ByRef sPT)   ' Array BoDy, Integer BaseCount, String PoSition
+'    If debug_ Then DebugPrintFile "JSONLIB multiArray called"
     Dim iDU, iDL, i ' Integer DimensionUBound, Integer DimensionLBound
     On Error Resume Next
     iDL = LBound(aBD, iBC)
