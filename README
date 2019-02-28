@@ -59,7 +59,7 @@ See web site
 4.Support
 None
 
-ticket search function is not use search API. because this API is supported on redmine version 3.3 and upper. 
+1.ticket search function is not use search API. because this API is supported on redmine version 3.3 and upper. 
 so when if search ticket body , responced very sloly
 
 読んでください 
