@@ -1,9 +1,9 @@
 ReadMe
 
-Redmine_tools_for_outlook ver 1.5.1
-create ticket for outlook mails and schedules
-ceate time entry
-search ticket , its not use search API. because this API is supported on redmine version 3.3 and upper.  linked mail Entry ID
+Redmine_tools_for_outlook ver 1.5.2
+1.create ticket for outlook e-mails and schedules
+2.ceate time entry, get time entry
+3.search ticket 
 
 1.Install
 1.1.Install Module
@@ -45,7 +45,7 @@ Macro-"Redmint_CreateTimeEntry"：
 Macro-"Redmint_Search"
  For Search ticket. Mail ID if You selected
 Macro-"Delete_Reg"：
- Delete Registory Data
+ Delete Registory Data, will refresh
 
 3.License
 3.1. RMTC_Creater.frm , RMTC_Creater.frx , RMTC_Module.bas , RMTC_Setting.frm , RMTC_Setting.frx , RMTM_Creater.frm , RMTM_Creater.frx , RMTS_Search.frm , RMTS_Search.frx
@@ -58,7 +58,10 @@ See web site
 
 4.Support
 None
- 
+
+ticket search function is not use search API. because this API is supported on redmine version 3.3 and upper. 
+so when if search ticket body , responced very sloly
+
 読んでください 
 
 Redmine_tools_for_outlook
