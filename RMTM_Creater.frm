@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTM_Creater 
    Caption         =   "Redmine Create TimeEntry"
-   ClientHeight    =   6810
+   ClientHeight    =   6816
    ClientLeft      =   120
    ClientTop       =   468
    ClientWidth     =   5340
@@ -470,8 +470,8 @@ If debug_ Then Debug.Print "rmtm_initializer Called"
     
     Call set_activity_ticket_for_assigned_id_to_me(LocalSavedSettings, Setting_Redmine_URL, Setting_Redmine_APIKEY)
 
-    ListBox_mytimeentry.ColumnWidths = "30;50;65;25;50"
-    TextBox_Comment.SetFocus
+    ListBox_mytimeentry.ColumnWidths = "20;80;60;10;50"
+
 End Sub
 Private Function draw_favorite_box()
     ComboBox_fevoritelist.Clear
@@ -957,7 +957,10 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
         ListBox_mytimeentry.List(listline, 2) = Var("activity")("name")
         ListBox_mytimeentry.List(listline, 3) = Var("hours")
         ListBox_mytimeentry.List(listline, 4) = Var("comments")
+        ListBox_mytimeentry.List(listline, 1) = get_ticket_subject_for_caption(ListBox_mytimeentry.List(listline, 0), Setting_Redmine_URL, Setting_Redmine_APIKEY, CLng(listline))
+       
         listline = listline + 1
+
     Next Var
     Set json = Nothing
     Set JSONLib = Nothing
