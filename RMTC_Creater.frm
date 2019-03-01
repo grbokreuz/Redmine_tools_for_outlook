@@ -194,7 +194,7 @@ Private Sub Label_GotoWeb_grapa_MouseDown(ByVal Button As Integer, ByVal Shift A
         If Label_GotoWeb_grapa.Caption = "New" Then
             Exit Sub
         End If
-        Call get_ticket_subject_for_caption(Label_GotoWeb_grapa.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+        Call get_ticket_subject_for_caption(Label_GotoWeb_grapa.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY, -1)
     End If
 End Sub
 Private Sub LabelLabel_GotWeb_parent_Click()
@@ -215,7 +215,7 @@ Private Sub LabelLabel_GotWeb_parent_MouseDown(ByVal Button As Integer, ByVal Sh
         If LabelLabel_GotWeb_parent.Caption = "New" Then
             Exit Sub
         End If
-        Call get_ticket_subject_for_caption(LabelLabel_GotWeb_parent.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+        Call get_ticket_subject_for_caption(LabelLabel_GotWeb_parent.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY, -1)
     End If
 End Sub
 Private Sub TextBox_Contetns_Change()

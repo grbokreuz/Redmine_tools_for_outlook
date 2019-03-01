@@ -235,7 +235,7 @@ Public Sub openweb(ByVal urlpath As String)
     WSH.Run urlpath, 3
     Set WSH = Nothing
 End Sub
-Public Function get_ticket_subject_for_caption(ByRef ticketnumber As Integer, ByVal url As String, ByVal apikey As String, ByRef col As Long)
+Public Function get_ticket_subject_for_caption(ByVal ticketnumber As Integer, ByVal url As String, ByVal apikey As String, ByRef col As Long)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant

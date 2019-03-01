@@ -269,7 +269,7 @@ Private Sub Label_selected_ticket_MouseDown(ByVal Button As Integer, ByVal Shift
         If selected_ticket_id = "" Then
             Exit Sub
         End If
-        Call get_ticket_subject_for_caption("" + selected_ticket_id, Setting_Redmine_URL, Setting_Redmine_APIKEY)
+        Call get_ticket_subject_for_caption(CInt(selected_ticket_id), Setting_Redmine_URL, Setting_Redmine_APIKEY, -1)
     End If
 End Sub
 
