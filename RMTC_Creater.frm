@@ -239,12 +239,12 @@ End Sub
 Private Sub CommandButton_DueCaleder_Click()
    Call CalenderForm.setDate(GetToday())
    Call CalenderForm.setCallBackControl(Label_DueDate)
-   CalenderForm.Show vbModeless
+   CalenderForm.Show
 End Sub
 Private Sub CommandButton_StartCaleder_Click()
    Call CalenderForm.setDate(GetToday())
    Call CalenderForm.setCallBackControl(Label_StartDate)
-   CalenderForm.Show vbModeless
+   CalenderForm.Show
 End Sub
 Private Function GetToday()
     GetToday = Year(Now) & "/" & Month(Now) & "/" & Day(Now)
