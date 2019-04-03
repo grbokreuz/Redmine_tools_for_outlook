@@ -119,6 +119,7 @@ Private Sub CommandButton_StartCaleder_Click()
    Call CalenderForm.setDate(GetToday())
    Call CalenderForm.setCallBackControl(Label_ActivityDate)
    CalenderForm.Show
+   Call check_my_timeentry_on_today(Setting_Redmine_URL, Setting_Redmine_APIKEY)
 End Sub
 Private Function GetToday()
     GetToday = Year(Now) & "/" & Month(Now) & "/" & Day(Now)
@@ -246,6 +247,10 @@ End Sub
 Private Sub CommandButton5_Click()
     Unload Me
     Redmint_CreateTicket
+End Sub
+
+Private Sub Label_ActivityDate_Click()
+
 End Sub
 
 Private Sub Label_assigned_to_me_Click()
@@ -913,9 +918,21 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     Dim total, offset, limit, nextoffset As Integer
     If debug_ Then Debug.Print "ÅöstartÅöCalle :: check_my_timeentry_on_today"
 
+    If Label_ActivityDate.Caption <> "" Then
+        Label_todaytimeentry_reload.Caption = Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "'s works"
+    Else
+        Label_todaytimeentry_reload.Caption = "todays works"
+    End If
+    
     Dim jsonstring As String
     ListBox_mytimeentry.Clear
+
+    If Label_ActivityDate.Caption = "" Then
     jsonstring = GetData(url & "time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "&key=" & apikey)
+    Else
+    jsonstring = GetData(url & "time_entries.json?user_id=me&spent_on=" & Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "&key=" & apikey)
+    End If
+    
     Set json = New Dictionary
     Set json = JSONLib.parse(jsonstring)
     If json Is Nothing Then
@@ -930,7 +947,12 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     Do While total > nextoffset
 
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
+        If Label_ActivityDate.Caption = "" Then
+            subjsonstr = GetData(url & "/time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
+        Else
+            subjsonstr = GetData(url & "/time_entries.json?user_id=me&spent_on=" & Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
+        End If
+
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
