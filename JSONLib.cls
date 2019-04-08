@@ -115,12 +115,15 @@ Private Function parseValue(ByRef str As String, ByRef index As Long)
         Set parseValue = parseArray(str, index)
     Case """", "'"
         parseValue = parseString(str, index)
+        If debug_ Then DebugPrintFile "this val is " & parseValue
     Case "t", "f"
         parseValue = parseBoolean(str, index)
     Case "n"
         parseValue = parseNull(str, index)
+        If debug_ Then DebugPrintFile "this val is " & parseValue
     Case Else
         parseValue = parseNumber(str, index)
+        If debug_ Then DebugPrintFile "this val is " & parseValue
     End Select
 
 End Function
@@ -144,7 +147,7 @@ Private Function parseString(ByRef str As String, ByRef index As Long) As String
             index = index + 1
             char = Mid(str, index, 1)
             Select Case (char)
-            Case """", "\\", "/"
+            Case """", "\", "/"
                 parseString = parseString & char
                 index = index + 1
             Case "b"
@@ -278,6 +281,7 @@ Private Function parseKey(ByRef str As String, ByRef index As Long) As String
             If InStr(vbCrLf & vbCr & vbLf & vbTab, char) Then '' why space ? added
             Else
                 parseKey = parseKey & char
+                If debug_ Then DebugPrintFile "this key is " & parseKey
             End If
             index = index + 1
         End Select
