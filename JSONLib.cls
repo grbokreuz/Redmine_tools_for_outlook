@@ -136,7 +136,10 @@ Private Function parseString(ByRef str As String, ByRef index As Long) As String
     Dim quote   As String
     Dim char    As String
     Dim code    As String
-    
+
+If index > 512000 Then
+MsgBox "i cant read redmine data. parse failed on [" & Mid(parseString, -10, 10) & "]"
+End If
     Call skipChar(str, index)
     quote = Mid(str, index, 1)
     index = index + 1
@@ -314,12 +317,12 @@ Public Function toString(ByRef obj As Variant) As String
             bFI = True
             If TypeName(obj) = "Dictionary" Then
                 toString = toString & "{"
-                Dim keys
-                keys = obj.keys
+                Dim Keys
+                Keys = obj.Keys
                 For i = 0 To obj.Count - 1
                     If bFI Then bFI = False Else toString = toString & ","
                     Dim key
-                    key = keys(i)
+                    key = Keys(i)
                     toString = toString & """" & key & """:" & toString(obj(key))
                 Next i
                 toString = toString & "}"
@@ -345,15 +348,15 @@ End Function
 
 Private Function encode(str) As String
 '    If debug_ Then DebugPrintFile "JSONLIB encode called"
-    Dim i, j, aL1, aL2, c, p
+    Dim i, j, aL1, aL2, C, p
 
     aL1 = Array(&H22, &H5C, &H2F, &H8, &HC, &HA, &HD, &H9)
     aL2 = Array(&H22, &H5C, &H2F, &H62, &H66, &H6E, &H72, &H74)
     For i = 1 To Len(str)
         p = True
-        c = Mid(str, i, 1)
+        C = Mid(str, i, 1)
         For j = 0 To 7
-            If c = Chr(aL1(j)) Then
+            If C = Chr(aL1(j)) Then
                 encode = encode & "\" & Chr(aL2(j))
                 p = False
                 Exit For
@@ -362,9 +365,9 @@ Private Function encode(str) As String
 
         If p Then
             Dim a
-            a = AscW(c)
+            a = AscW(C)
             If a > 31 And a < 127 Then
-                encode = encode & c
+                encode = encode & C
             ElseIf a > -1 Or a < 65535 Then
                 encode = encode & "\u" & String(4 - Len(Hex(a)), "0") & Hex(a)
             End If

@@ -91,16 +91,16 @@ Public Function CreateHttpObject() As Object
     End If
     Set CreateHttpObject = Nothing
 End Function
-Public Function GetData(ByVal url As String) As String
+Public Function GetData(ByVal URL As String) As String
     Dim data As String
     Dim objweb As Object
-    If debug_ Then Debug.Print "REST URL : " & url
+    If debug_ Then Debug.Print "REST URL : " & URL
     Set objweb = CreateHttpObject()
     If objweb Is Nothing Then
         GetData = ""
         Exit Function
     End If
-    objweb.Open "GET", url, False
+    objweb.Open "GET", URL, False
     objweb.Send
 
     If objweb.responseText = "" Then
@@ -194,13 +194,13 @@ End Sub
 Function PostchkMail(obj As MailItem)
     Mail_Subject = ConvertString(obj.subject)
     Mail_Body = ConvertString(obj.Body)
-    RMTC_Creater.TextBox_Contetns = vbNewLine & "{{collapse(eMail)" & vbNewLine & Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "}}" & vbNewLine & "{{collapse(EntryID)" & vbNewLine & "==EntryID=" & obj.EntryID & "==" & "}}" & vbNewLine
+    RMTC_Creater.TextBox_Contetns = vbNewLine & "{{collapse(eMail)" & vbNewLine & Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "}}" & vbNewLine & "{{collapse(EntryID)" & vbNewLine & "==EntryID=" & obj.EntryID & "==" & vbNewLine & "}}" & vbNewLine
     RMTC_Creater.TextBox_Subject = Mail_Subject
 End Function
 Function PostchkCal(obj As AppointmentItem)
     Mail_Subject = ConvertString(obj.subject)
     Mail_Body = ConvertString(obj.Body)
-    RMTC_Creater.TextBox_Contetns = vbNewLine & "{{collapse(eMail)" & vbNewLine & Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "}}" & vbNewLine & "{{collapse(EntryID)" & vbNewLine & "==EntryID=" & obj.EntryID & "==" & "}}" & vbNewLine
+    RMTC_Creater.TextBox_Contetns = vbNewLine & "{{collapse(Cal)" & vbNewLine & Mail_Subject & vbNewLine & Mail_Body & vbNewLine & "}}" & vbNewLine & "{{collapse(EntryID)" & vbNewLine & "==EntryID=" & obj.EntryID & "==" & vbNewLine & "}}" & vbNewLine
     RMTC_Creater.TextBox_Subject = Mail_Subject
     RMTM_Creater.ScrollBar_timeentry.value = ConvertString(obj.Duration) / 60 / 0.25
     RMTM_Creater.TextBox_Comment.Text = ConvertString(obj.ConversationTopic) & Mail_Subject
@@ -235,18 +235,18 @@ Public Sub openweb(ByVal urlpath As String)
     WSH.Run urlpath, 3
     Set WSH = Nothing
 End Sub
-Public Function get_ticket_subject_for_caption(ByVal ticketnumber As Integer, ByVal url As String, ByVal apikey As String, ByRef col As Long)
+Public Function get_ticket_subject_for_caption(ByVal ticketnumber As Integer, ByVal URL As String, ByVal apikey As String, ByRef col As Long)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
     If debug_ Then DebugPrintFile "ÅöstartÅöCalle :: get_ticket_subject_for_caption"
-    Dim jsonstring As String
+    Dim JsonString As String
 
     
-    jsonstring = GetData(url & "/issues/" & ticketnumber & ".json?key=" & apikey)
+    JsonString = GetData(URL & "/issues/" & ticketnumber & ".json?key=" & apikey)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
 
 
     If json Is Nothing Then
@@ -290,11 +290,11 @@ Public Sub DebugPrintFile(varData As Variant)
   Dim lngFileNum As Long
   Dim strLogFile As String
   
-'  strLogFile = "C:\temp\OutlookVBA_DebugPrint.txt"
-'  lngFileNum = FreeFile()
-'  Open strLogFile For Append As #lngFileNum
-'  Print #lngFileNum, varData
-'  Close #lngFileNum
+  strLogFile = "C:\temp\OutlookVBA_DebugPrint.txt"
+  lngFileNum = FreeFile()
+  Open strLogFile For Append As #lngFileNum
+  Print #lngFileNum, varData
+  Close #lngFileNum
   
   Debug.Print varData
 

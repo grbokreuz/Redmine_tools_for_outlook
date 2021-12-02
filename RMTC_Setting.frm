@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTC_Setting 
    Caption         =   "Redmine Ticket Creater Settings"
-   ClientHeight    =   8196.001
+   ClientHeight    =   8190
    ClientLeft      =   120
-   ClientTop       =   468
-   ClientWidth     =   9552.001
+   ClientTop       =   465
+   ClientWidth     =   9555.001
    OleObjectBlob   =   "RMTC_Setting.frx":0000
    StartUpPosition =   1  'オーナー フォームの中央
 End
@@ -22,7 +22,7 @@ Private Sub ComboBox_Project_for_usermember_Change()
     Dim selectedItemVal As String
     Dim word As Variant
     selectedItemKey = ComboBox_Project_for_usermember.value
-    For Each word In Dic_Projects.keys
+    For Each word In Dic_Projects.Keys
         If word = selectedItemKey Then
             selectedItemVal = Dic_Projects(word)
             Exit For
@@ -152,7 +152,7 @@ Private Sub CommandButton_LoadSettingForm_Click()
         ComboBox_Project_for_usermember = ComboBox_Project_for_usermember.List(0)
     End If
 End Sub
-Public Sub get_issue_membership_for_project_For_Setting(ByVal url As String, ByVal project As String, ByVal apikey As String)
+Public Sub get_issue_membership_for_project_For_Setting(ByVal URL As String, ByVal project As String, ByVal apikey As String)
     If debug_ Then Debug.Print "get_issue_membership_for_project_For_Setting"
     If project = "" Then
         If debug_ Then Debug.Print "Not found; project "
@@ -163,14 +163,14 @@ Public Sub get_issue_membership_for_project_For_Setting(ByVal url As String, ByV
     Set Dic_Users = New Dictionary
     ListBox_Users_from_rm.Clear
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/projects/" & project & "/memberships.json?key=" & apikey)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/projects/" & project & "/memberships.json?key=" & apikey)
     Dim JSONLib As New JSONLib
     Dim json As Object
     Dim Var As Variant
     Dim total, offset, limit
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -185,7 +185,7 @@ Public Sub get_issue_membership_for_project_For_Setting(ByVal url As String, ByV
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/projects/" & project & "/memberships.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
+        subjsonstr = GetData(URL & "/projects/" & project & "/memberships.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -204,25 +204,32 @@ Public Sub get_issue_membership_for_project_For_Setting(ByVal url As String, ByV
             End If
             ListBox_Users_from_rm.AddItem (Var("user")("name"))
         End If
+        If Var.exists("group") Then
+            If Dic_Users.exists(Var("group")("name")) Then
+            Else
+                Dic_Users.Add Var("group")("name"), Var("group")("id")
+            End If
+            ListBox_Users_from_rm.AddItem (Var("group")("name"))
+        End If
     Next Var
     Set json = Nothing
     Set JSONLib = Nothing
 End Sub
-Public Sub get_issue_project_For_Setting(ByVal url As String, ByVal apikey As String)
+Public Sub get_issue_project_For_Setting(ByVal URL As String, ByVal apikey As String)
     Set Dic_Projects = Nothing
     Set Dic_Projects = New Dictionary
     ComboBox_Project_for_usermember.Clear
     ListBox_Users_from_rm.Clear
     Set Dic_Projects_ID = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/projects.json?key=" & apikey)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/projects.json?key=" & apikey)
     Dim JSONLib As New JSONLib
     Dim json As Object
     Dim Var As Variant
     Dim total, offset, limit
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -237,7 +244,7 @@ Public Sub get_issue_project_For_Setting(ByVal url As String, ByVal apikey As St
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/projects.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
+        subjsonstr = GetData(URL & "/projects.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -256,17 +263,17 @@ Public Sub get_issue_project_For_Setting(ByVal url As String, ByVal apikey As St
     Set json = Nothing
     Set JSONLib = Nothing
 End Sub
-Public Sub get_timeentry_activity_For_Setting(ByVal url As String, ByVal apikey As String)
+Public Sub get_timeentry_activity_For_Setting(ByVal URL As String, ByVal apikey As String)
     Set Dic_TimeEntryActivity = Nothing
     Set Dic_TimeEntryActivity = New Dictionary
     ListBox_setting_TimeEntryActivity.Clear
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/enumerations/time_entry_activities.json?key=" & apikey)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/enumerations/time_entry_activities.json?key=" & apikey)
     Dim JSONLib As New JSONLib
     Dim json As Object
     Dim Var As Variant
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -278,7 +285,7 @@ Public Sub get_timeentry_activity_For_Setting(ByVal url As String, ByVal apikey 
     Set json = Nothing
     Set JSONLib = Nothing
 End Sub
-Public Sub get_issue_statuses_For_Setting(ByVal url As String, ByVal apikey As String)
+Public Sub get_issue_statuses_For_Setting(ByVal URL As String, ByVal apikey As String)
     Set Dic_Statuses = Nothing
     Set Dic_Statuses = New Dictionary
     ListBox_Setting_Status_parents.Clear
@@ -286,14 +293,14 @@ Public Sub get_issue_statuses_For_Setting(ByVal url As String, ByVal apikey As S
     ListBox_setting_Status.Clear
     ListBox_Setting_Status_child.Clear
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issue_statuses.json?key=" & apikey)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issue_statuses.json?key=" & apikey)
     Dim JSONLib As New JSONLib
     Dim json As Object
     Dim Var As Variant
     Dim total, offset, limit
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -308,7 +315,7 @@ Public Sub get_issue_statuses_For_Setting(ByVal url As String, ByVal apikey As S
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issue_statuses.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
+        subjsonstr = GetData(URL & "/issue_statuses.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -330,7 +337,7 @@ Public Sub get_issue_statuses_For_Setting(ByVal url As String, ByVal apikey As S
     Set json = Nothing
     Set JSONLib = Nothing
 End Sub
-Public Sub get_issue_tracker_For_Setting(ByVal url As String, ByVal apikey As String)
+Public Sub get_issue_tracker_For_Setting(ByVal URL As String, ByVal apikey As String)
     Set Dic_Trackers = Nothing
     Set Dic_Trackers = New Dictionary
     ListBox_Setting_Tracker_grandparent.Clear
@@ -340,14 +347,14 @@ Public Sub get_issue_tracker_For_Setting(ByVal url As String, ByVal apikey As St
     ListBox_New_Ticket_Backlog.Clear
     ListBox_Setting_Tracker_child.Clear
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/trackers.json?key=" & apikey)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/trackers.json?key=" & apikey)
     Dim JSONLib As New JSONLib
     Dim json As Object
     Dim Var As Variant
     Dim total, offset, limit
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -362,7 +369,7 @@ Public Sub get_issue_tracker_For_Setting(ByVal url As String, ByVal apikey As St
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/trackers.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
+        subjsonstr = GetData(URL & "/trackers.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -386,19 +393,19 @@ Public Sub get_issue_tracker_For_Setting(ByVal url As String, ByVal apikey As St
     Set json = Nothing
     Set JSONLib = Nothing
     End Sub
-Public Sub get_issue_priority_For_Setting(ByVal url As String, ByVal apikey As String)
+Public Sub get_issue_priority_For_Setting(ByVal URL As String, ByVal apikey As String)
     Set Dic_Priority = Nothing
     Set Dic_Priority = New Dictionary
     ListBox_setting_priority.Clear
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/enumerations/issue_priorities.json?key=" & apikey)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/enumerations/issue_priorities.json?key=" & apikey)
     Dim JSONLib As New JSONLib
     Dim json As Object
     Dim Var As Variant
     Dim total, offset, limit
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -413,7 +420,7 @@ Public Sub get_issue_priority_For_Setting(ByVal url As String, ByVal apikey As S
         If debug_ Then Debug.Print "offset " & json("offset")
         If debug_ Then Debug.Print "total " & json("total_count")
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/enumerations/issue_priorities.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
+        subjsonstr = GetData(URL & "/enumerations/issue_priorities.json?key=" & apikey & "&offset=" & json("limit") + json("offset"))
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)

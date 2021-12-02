@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTC_Creater 
    Caption         =   "Redmine Ticket Creater"
-   ClientHeight    =   6816
+   ClientHeight    =   10575
    ClientLeft      =   120
-   ClientTop       =   468
-   ClientWidth     =   5400
+   ClientTop       =   465
+   ClientWidth     =   12345
    OleObjectBlob   =   "RMTC_Creater.frx":0000
    StartUpPosition =   1  'オーナー フォームの中央
 End
@@ -188,15 +188,20 @@ Private Sub Label_GotoWeb_grapa_Click()
         openweb (Setting_Redmine_URL & "/issues/" & Dic_Story(ComboBox_ParentStory.Text))
     End If
 End Sub
-Private Sub Label_GotoWeb_grapa_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+Private Sub Label_GotoWeb_grapa_MouseDown(ByVal button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     Dim buf As Long
-    If Button = 2 Then
+    If button = 2 Then
         If Label_GotoWeb_grapa.Caption = "New" Then
             Exit Sub
         End If
         Call get_ticket_subject_for_caption(Label_GotoWeb_grapa.Caption, Setting_Redmine_URL, Setting_Redmine_APIKEY, -1)
     End If
 End Sub
+
+Private Sub Label_ParentsActivity_Click()
+
+End Sub
+
 Private Sub LabelLabel_GotWeb_parent_Click()
     If debug_ Then Debug.Print "activity open web start : " & Setting_Redmine_URL & "/issue/" & Dic_Activity(ComboBox_parentActivity) & "?key=" & Setting_Redmine_APIKEY
     If Dic_Activity(ComboBox_parentActivity.Text) = "" Then
@@ -209,9 +214,9 @@ Private Sub LabelLabel_GotWeb_parent_Click()
     End If
 
 End Sub
-Private Sub LabelLabel_GotWeb_parent_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+Private Sub LabelLabel_GotWeb_parent_MouseDown(ByVal button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     Dim buf As Long
-    If Button = 2 Then
+    If button = 2 Then
         If LabelLabel_GotWeb_parent.Caption = "New" Then
             Exit Sub
         End If
@@ -317,7 +322,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
+Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Object, ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
@@ -372,10 +377,10 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -389,7 +394,7 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     Do While total > nextoffset
 
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -416,7 +421,7 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     Set json = Nothing
     Set JSONLib = Nothing
 End Sub
-Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
+Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As Object, ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
@@ -475,10 +480,10 @@ Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As 
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -492,7 +497,7 @@ Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As 
     Do While total > nextoffset
 
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -520,7 +525,7 @@ Public Sub set_activity_ticket_for_selected_project(ByRef LocalSavedSettings As 
     Set JSONLib = Nothing
 End Sub
 Public Function postredmineJson(ByVal tmyracker As String, ByVal parentid As String)
-    Dim Bodystr
+    Dim bodyStr
     Dim SubjStr
     Dim xhr
     Dim RequestURL As String
@@ -532,7 +537,7 @@ Public Function postredmineJson(ByVal tmyracker As String, ByVal parentid As Str
     If debug_ Then Debug.Print "RequestURL is " & RequestURL
     Set xhr = CreateObject("Microsoft.XMLHTTP")
     xhr.Open "POST", RequestURL, False
-    xhr.SetRequestHeader "Content-Type", "text/xml"
+    xhr.setRequestHeader "Content-Type", "text/xml"
     RequestBody = "<?xml version=" & Chr(34) & "1.0" & Chr(34) & "?>"
     RequestBody = RequestBody & "<issue>"
     If debug_ Then Debug.Print "post data :: project_id is " & LocalSavedSettings("Dic_Projects")(ComboBox_Project.Text)

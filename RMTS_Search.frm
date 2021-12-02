@@ -1,9 +1,9 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTS_Search 
    Caption         =   "RMTS_Search"
-   ClientHeight    =   5328
+   ClientHeight    =   5325
    ClientLeft      =   120
-   ClientTop       =   468
+   ClientTop       =   465
    ClientWidth     =   5160
    OleObjectBlob   =   "RMTS_Search.frx":0000
    StartUpPosition =   1  'オーナー フォームの中央
@@ -21,7 +21,7 @@ Public Function set_param(ByVal inp_id As String, ByVal inp_name As String)
     project = inp_id
     ComboBox_Project.value = inp_name
 End Function
-Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword As String, ByVal url As String, ByVal apikey As String)
+Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword As String, ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
@@ -60,10 +60,10 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
     
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
 
@@ -77,7 +77,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -128,7 +128,7 @@ Public Sub get_ticket_for_keyword_categ(ByRef project As String, ByRef keyword A
     Set json = Nothing
     Set JSONLib = Nothing
 End Sub
-Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword As String, ByVal url As String, ByVal apikey As String)
+Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword As String, ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
@@ -168,10 +168,10 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
 
@@ -186,7 +186,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     Do While total > nextoffset
 
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -236,7 +236,7 @@ Public Sub get_ticket_for_keyword_subcat(ByRef project As String, ByRef keyword 
     Set json = Nothing
     Set JSONLib = Nothing
 End Sub
-Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword As String, ByVal url As String, ByVal apikey As String)
+Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword As String, ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
@@ -275,10 +275,10 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
 
@@ -293,7 +293,7 @@ Public Sub get_ticket_for_keyword_subsub(ByRef project As String, ByRef keyword 
     Do While total > nextoffset
 
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&status_id=open&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -346,7 +346,7 @@ End Sub
 Private Function reg_hit(ByRef str As String, ByRef ptrn As String)
     Dim regex
     Set regex = CreateObject("VBScript.RegExp")
-    regex.Pattern = ptrn
+    regex.pattern = ptrn
     Dim result
     Set result = regex.Execute(str)
     reg_hit = result.Count
@@ -422,9 +422,9 @@ Private Sub ListBox_TicketList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
         Unload Me
     End If
 End Sub
-Private Sub ListBox_TicketList_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+Private Sub ListBox_TicketList_MouseDown(ByVal button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     Dim buf As Long
-    If Button = 2 Then
+    If button = 2 Then
         buf = Int((Y + 1) / ListBox_TicketList.Font.Size)
         If buf > ListBox_TicketList.ListCount - 1 Then
             buf = ListBox_TicketList.ListCount - 1

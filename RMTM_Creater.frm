@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RMTM_Creater 
    Caption         =   "Redmine Create TimeEntry"
-   ClientHeight    =   6816
+   ClientHeight    =   7545
    ClientLeft      =   120
-   ClientTop       =   468
-   ClientWidth     =   5340
+   ClientTop       =   465
+   ClientWidth     =   9885.001
    OleObjectBlob   =   "RMTM_Creater.frx":0000
    StartUpPosition =   1  'ÉIÅ[ÉiÅ[ ÉtÉHÅ[ÉÄÇÃíÜâõ
 End
@@ -87,6 +87,11 @@ End Sub
 Private Sub CommandButton_setfavorite_DBClick()
     Call CommandButton_setfavorite_Click
 End Sub
+
+Private Sub ComboBox_TimeEntryActivity_Change()
+
+End Sub
+
 Private Sub CommandButton_setfavorite_Click()
     Dim tmpdic As Dictionary
     Set tmpdic = New Dictionary
@@ -139,7 +144,7 @@ Private Sub CommandButton_SubmitTimeEntry_Click()
     If debug_ Then Debug.Print "RequestURL is " & RequestURL
     Set xhr = CreateObject("Microsoft.XMLHTTP")
     xhr.Open "POST", RequestURL, False
-    xhr.SetRequestHeader "Content-Type", "text/xml"
+    xhr.setRequestHeader "Content-Type", "text/xml"
     
     RequestBody = "<?xml version=" & Chr(34) & "1.0" & Chr(34) & "?>"
     RequestBody = RequestBody & "<time_entry>"
@@ -249,7 +254,7 @@ Private Sub CommandButton5_Click()
     Redmint_CreateTicket
 End Sub
 
-Private Sub Label_ActivityDate_Click()
+Private Sub Frame1_Click()
 
 End Sub
 
@@ -268,9 +273,9 @@ Private Sub Label_selected_ticket_Click()
         openweb (Setting_Redmine_URL & "/issues/" & selected_ticket_id)
     End If
 End Sub
-Private Sub Label_selected_ticket_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+Private Sub Label_selected_ticket_MouseDown(ByVal button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     Dim buf As Long
-    If Button = 2 Then
+    If button = 2 Then
         If selected_ticket_id = "" Then
             Exit Sub
         End If
@@ -284,6 +289,10 @@ End Sub
 
 
 
+Private Sub Label4_Click()
+
+End Sub
+
 Private Sub ListBox_mytimeentry_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 
     If ListBox_mytimeentry.value = "" Then
@@ -296,9 +305,9 @@ Private Sub ListBox_mytimeentry_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 
     End If
 End Sub
-Private Sub ListBox_mytimeentry_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+Private Sub ListBox_mytimeentry_MouseDown(ByVal button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
     Dim buf As Long
-    If Button = 2 Then
+    If button = 2 Then
         buf = Int((Y + 1) / ListBox_mytimeentry.Font.Size)
         If buf > ListBox_mytimeentry.ListCount - 1 Then
             buf = ListBox_mytimeentry.ListCount - 1
@@ -529,7 +538,7 @@ Private Sub ComboBox_Project_Change()
     If debug_ Then Debug.Print "ComboBox_Project_Change :: ended"
 End Sub
 
-Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
+Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Object, ByVal URL As String, ByVal apikey As String)
     If debug_ Then Debug.Print "ÅöstartÅöCalle :: set_story_ticket_for_selected_project"
     Dim JSONLib As New JSONLib
     Dim json As Object
@@ -590,10 +599,10 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -606,7 +615,7 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -636,7 +645,7 @@ Public Sub set_story_ticket_for_selected_project(ByRef LocalSavedSettings As Obj
     Set JSONLib = Nothing
 If debug_ Then Debug.Print "ÅöendÅö set_story_ticket_for_selected_project"
 End Sub
-Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
+Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Object, ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
@@ -700,12 +709,12 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
     Set Dic_Users = New Dictionary
 
 
-    Dim jsonstring As String
+    Dim JsonString As String
     
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
     
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -719,7 +728,7 @@ Public Sub set_activity_ticket_for_selected_story(ByRef LocalSavedSettings As Ob
     If debug_ Then Debug.Print "limit " & limit & " / offset " & offset & " / total " & total
     Do While total > nextoffset
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
         Set jsonsub = JSONLib.parse(subjsonstr)
@@ -769,7 +778,7 @@ Private Sub ComboBox_ParentStory_Change()
     End If
  '   TextBox_Comment.Text = ""
 End Sub
-Public Sub set_backlog_ticket_for_selected_activity(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
+Public Sub set_backlog_ticket_for_selected_activity(ByRef LocalSavedSettings As Object, ByVal URL As String, ByVal apikey As String)
 If debug_ Then Debug.Print "ÅöstartÅö set_backlog_ticket_for_selected_activity"
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
@@ -834,10 +843,10 @@ If debug_ Then Debug.Print "ÅöstartÅö set_backlog_ticket_for_selected_activity"
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -851,7 +860,7 @@ If debug_ Then Debug.Print "ÅöstartÅö set_backlog_ticket_for_selected_activity"
     Do While total > nextoffset
 
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&project_id=" & myProject & "&parent_id=" & myStory & "&offset=" & nextoffset & "&" & filterstr)
 
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
@@ -886,16 +895,16 @@ If debug_ Then Debug.Print "ÅöstartÅö set_backlog_ticket_for_selected_activity"
 If debug_ Then Debug.Print "ÅöendÅö set_backlog_ticket_for_selected_activity"
 End Sub
 
-Public Sub get_ticket_subject(ByRef ticketnumber As Integer, ByVal url As String, ByVal apikey As String)
+Public Sub get_ticket_subject(ByRef ticketnumber As Integer, ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
     Dim total, offset, limit, nextoffset As Integer
     If debug_ Then Debug.Print "ÅöstartÅöCalle :: get_ticket_subject"
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues/" & ticketnumber & ".json?key=" & apikey)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues/" & ticketnumber & ".json?key=" & apikey)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "not found ticket."
         Call CommandButton2_Click
@@ -911,7 +920,7 @@ Public Sub get_ticket_subject(ByRef ticketnumber As Integer, ByVal url As String
 If debug_ Then Debug.Print "ÅöendÅö get_ticket_subject"
 End Sub
 
-Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As String)
+Private Sub check_my_timeentry_on_today(ByVal URL As String, ByVal apikey As String)
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
     Dim Var As Variant
@@ -919,22 +928,22 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     If debug_ Then Debug.Print "ÅöstartÅöCalle :: check_my_timeentry_on_today"
 
     If Label_ActivityDate.Caption <> "" Then
-        Label_todaytimeentry_reload.Caption = Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "'s works"
+        Label_todaytimeentry_reload.Caption = Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & " ÇÃìoò^éûä‘Çï\é¶"
     Else
-        Label_todaytimeentry_reload.Caption = "todays works"
+        Label_todaytimeentry_reload.Caption = "ñ{ì˙ÇÃìoò^éûä‘Çï\é¶"
     End If
     
-    Dim jsonstring As String
+    Dim JsonString As String
     ListBox_mytimeentry.Clear
 
     If Label_ActivityDate.Caption = "" Then
-    jsonstring = GetData(url & "time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "&key=" & apikey)
+    JsonString = GetData(URL & "time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "&key=" & apikey)
     Else
-    jsonstring = GetData(url & "time_entries.json?user_id=me&spent_on=" & Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "&key=" & apikey)
+    JsonString = GetData(URL & "time_entries.json?user_id=me&spent_on=" & Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "&key=" & apikey)
     End If
     
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         Exit Sub
     End If
@@ -948,9 +957,9 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
 
         Dim subjsonstr As String
         If Label_ActivityDate.Caption = "" Then
-            subjsonstr = GetData(url & "/time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
+            subjsonstr = GetData(URL & "/time_entries.json?user_id=me&spent_on=" & Format(GetToday(), "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
         Else
-            subjsonstr = GetData(url & "/time_entries.json?user_id=me&spent_on=" & Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
+            subjsonstr = GetData(URL & "/time_entries.json?user_id=me&spent_on=" & Format(Label_ActivityDate.Caption, "yyyy-mm-dd") & "?key=" & apikey & "&offset=" & nextoffset)
         End If
 
         Dim jsonsub As Object
@@ -986,7 +995,7 @@ Private Sub check_my_timeentry_on_today(ByVal url As String, ByVal apikey As Str
     Next Var
     Set json = Nothing
     Set JSONLib = Nothing
-    Label_spentontoday_hours.Caption = "[" & totaltimeentry & "] hours spent on today"
+    Label_spentontoday_hours.Caption = "çáåv [" & totaltimeentry & "] éûä‘ÇÃìoò^Ç™Ç†ÇËÇ‹Ç∑"
 If debug_ Then Debug.Print "ÅöendÅö check_my_timeentry_on_today"
 
 End Sub
@@ -1005,7 +1014,7 @@ Private Function favorite_initialize(ByRef ticketid As String)
       End If
     End If
 End Function
-Public Sub set_activity_ticket_for_assigned_id_to_me(ByRef LocalSavedSettings As Object, ByVal url As String, ByVal apikey As String)
+Public Sub set_activity_ticket_for_assigned_id_to_me(ByRef LocalSavedSettings As Object, ByVal URL As String, ByVal apikey As String)
 If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
     Dim JSONLib As New JSONLib
     Dim json, tmpdic As Object
@@ -1041,10 +1050,10 @@ If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
     Set Dic_Users = Nothing
     Set Dic_Users = New Dictionary
 
-    Dim jsonstring As String
-    jsonstring = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&" & filterstr)
+    Dim JsonString As String
+    JsonString = GetData(URL & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&" & filterstr)
     Set json = New Dictionary
-    Set json = JSONLib.parse(jsonstring)
+    Set json = JSONLib.parse(JsonString)
     If json Is Nothing Then
         MsgBox "Cant load rm."
         Exit Sub
@@ -1058,7 +1067,7 @@ If debug_ Then Debug.Print "ÅöstartÅö set_activity_ticket_for_assigned_id_to_me"
     Do While total > nextoffset
 
         Dim subjsonstr As String
-        subjsonstr = GetData(url & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&offset=" & nextoffset & "&" & filterstr)
+        subjsonstr = GetData(URL & "/issues.json?key=" & apikey & "&assigned_to_id=me&status=open&offset=" & nextoffset & "&" & filterstr)
 
         Dim jsonsub As Object
         Set jsonsub = New Dictionary
